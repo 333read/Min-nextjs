@@ -9,7 +9,7 @@
     }
   ],
   "compilerOptions": {
-    "strict": true,
+    "strict": false,
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"]

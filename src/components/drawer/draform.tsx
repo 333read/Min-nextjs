@@ -28,25 +28,25 @@ return (
                     render={({ field }) => (
                     <>
                         <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>名称：</FormLabel>
                         <FormControl>
-                            <Input placeholder="shadcn"  />
+                            <Input placeholder="阿里云oss"  />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
 
                         <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>OSS_ACCESS_KEY_ID：</FormLabel>
                         <FormControl>
-                            <Input placeholder="shadcn" {...field} />
+                            <Input placeholder="<ALIBABA_CLOUD_ACCESS_KEY_ID>" {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
 
                         <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>OSS_ACCESS_KEY_SECRET：</FormLabel>
                         <FormControl>
-                            <Input placeholder="shadcn" {...field} />
+                            <Input placeholder="<ALIBABA_CLOUD_ACCESS_KEY_SECRET>"  />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -68,7 +68,7 @@ return (
                             <div className="flex justify-between">
                                 <div>
                                     <Label htmlFor='input'>CPU限制：</Label>
-                                    <Input className='w-max'/>
+                                    <Input className='w-min'/>
                                 </div>
                                 <div>
                                     <Label htmlFor='input'>内存限制：</Label>
@@ -87,7 +87,7 @@ return (
                         
                     )}
                     />
-                    <div className='flex justify-start'>
+                    <div className='flex justify-start space-x-3'>
                         <Button type='submit' variant='surely' className='cursor-pointer'>重启</Button>
                         <Button variant='outline' className='cursor-pointer'>取消</Button>
                     </div>
