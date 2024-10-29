@@ -3,14 +3,21 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+
+// import {
+//   Sheet,
+//   SheetContent,
+//   SheetHeader,
+//   SheetTitle,
+//   SheetDescription,
+//   SheetTrigger,
+// } from "@/components/ui/sheet"
+// import { Label } from "@/components/ui/label"
+// import { Input } from '@/components/ui/input'
+// import { Checkbox } from './components/ui/checkbox'
+// import { Textarea } from "@/components/ui/textarea"
+import  Drawer  from "@/components/drawer/page"
+import { ProfileForm } from "@/components/drawer/draform"
 
 
 
@@ -28,25 +35,10 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
-      
-      <Sheet>
-      <SheetTrigger>Open</SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Are you absolutely sure?</SheetTitle>
-          <SheetDescription>
-            This action cannot be undone. This will permanently delete your account
-            and remove your data from our servers.
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
-
+      <Drawer />
 
       <div className="card">
-        
         <Button variant="outline" onClick={() => setCount((count) => count + 1)}>点点 {count}</Button>
-
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
