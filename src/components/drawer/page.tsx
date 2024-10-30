@@ -7,15 +7,38 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { ProfileForm } from "@/components/drawer/draform"
+import  { useState } from "react";
 
 
 function Drawer() {
+
+    const [isInstalled, setIsInstalled] = useState(false);
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleInstallClick = () => {
+        if (!isInstalled) {
+            setIsInstalled(true);
+            setIsOpen(true); // 打开侧边栏
+        }
+    };
+
+
     return (
         <>
-        <Sheet>
-            <SheetTrigger>
-                <div  className='cursor-pointer border-lime-400 text-lime-600 border-2 rounded-full px-5 py-2'>
-                    安装
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+                <div 
+                onClick={(e) => {
+                    if (isInstalled) {
+                        e.preventDefault(); // 阻止默认行为
+                        e.stopPropagation(); // 阻止事件冒泡
+                    } else {
+                        handleInstallClick(); // 处理安装逻辑
+                    }
+                }} 
+                className={`cursor-pointer border-2 rounded-full px-5 py-2${isInstalled? " bg-gray-500 text-gray-200 cursor-not-allowed" : " bg-theme-color text-white"} `}>
+                    {isInstalled? "已安装" : "安装"}
                 </div>
             </SheetTrigger>
             <SheetContent>
