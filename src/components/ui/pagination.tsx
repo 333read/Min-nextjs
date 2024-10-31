@@ -40,12 +40,14 @@ PaginationItem.displayName = "PaginationItem"
 
 type PaginationLinkProps = {
   isActive?: boolean
+  disabled?: boolean; // 添加 disabled 类型
 } & Pick<ButtonProps, "size"> &
   React.ComponentProps<"a">
 
 const PaginationLink = ({
   className,
   isActive,
+  disabled,
   size = "icon",
   ...props
 }: PaginationLinkProps) => (
@@ -53,25 +55,40 @@ const PaginationLink = ({
     aria-current={isActive ? "page" : undefined}
     className={cn(
       buttonVariants({
-        variant: isActive ? "outline" : "ghost",
+        variant: isActive ? "secondary" : "ghost",
         size,
       }),
-      className
+      className,
+      { 'cursor-not-allowed opacity-50': disabled } // 添加样式
     )}
+    onClick={(e) => {
+      if (disabled) {
+        e.preventDefault();
+      }
+    }}
     {...props}
+
   />
 )
 PaginationLink.displayName = "PaginationLink"
 
 const PaginationPrevious = ({
   className,
+  disabled,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
+}: React.ComponentProps<typeof PaginationLink>  & { disabled?: boolean } )=> (
   <PaginationLink
     aria-label="Go to previous page"
     // size="default"
-    className={cn("gap-1 pl-2.5", className)}
+    className={cn("gap-1 pl-2.5", className, { 'cursor-not-allowed opacity-50': disabled })}
+    onClick={(e) => {
+      if (disabled) {
+        e.preventDefault();
+      }
+    }}
     {...props}
+    disabled={disabled}
+    
   >
     <ChevronLeftIcon className="h-4 w-4" />
     {/* <span>Previous</span> */}
@@ -81,13 +98,16 @@ PaginationPrevious.displayName = "PaginationPrevious"
 
 const PaginationNext = ({
   className,
+  disabled,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
+}: React.ComponentProps<typeof PaginationLink> & { disabled?: boolean }) => (
   <PaginationLink
     aria-label="Go to next page"
     // size="default"
-    className={cn("gap-1 pr-2.5 ", className)}
+    className={cn("gap-1 pr-2.5 ", className, { 'cursor-not-allowed opacity-50': disabled })}
+    disabled={disabled}
     {...props}
+    
   >
     {/* <span>Next</span> */}
     <ChevronRightIcon className="h-4 w-4" />
@@ -101,7 +121,7 @@ const PaginationEllipsis = ({
 }: React.ComponentProps<"span">) => (
   <span
     aria-hidden
-    className={cn("flex h-9 w-9 items-center justify-center", className)}
+    className={cn("flex h-9 w-9 items-center justify-center", className )}
     {...props}
   >
     <DotsHorizontalIcon className="h-4 w-4" />

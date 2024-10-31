@@ -19,7 +19,7 @@ export function CardWithAll() {
             <CardContent  className=" flex justify-start space-x-4 mt-9">
                 <Avatar className="my-auto size-10">
                     <AvatarImage src="https://github.com/vercel.png" />
-                    <AvatarFallback>VC</AvatarFallback>
+                    <AvatarFallback>loading</AvatarFallback>
                 </Avatar>
             
                 <CardDescription className="space-y-1 text-left">
