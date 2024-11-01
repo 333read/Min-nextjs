@@ -7,16 +7,21 @@ import {
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useState } from "react"
-import  { AlertDialogDemo }  from "@/components/tabsnav/alert"
+import  { AlertDialogDemo }  from "@/components/tabsnav/uninstallalert"
 import { LoadingOverlay } from "@/components/tabsnav/loading"
+import { AlertLogDemo } from "@/components/tabsnav/logalert"
+
 
 
 
 export function CardWithInStalled() {
     //卸载状态
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLogOpen, setIsLogOpen] = useState(false);
     const openDialog = () => setIsDialogOpen(true);
     const closeDialog = () => setIsDialogOpen(false);
+    const closeLog = () => setIsLogOpen(false);
+
     //loading状态
     const [isLoading, setIsLoading] = useState(false);
     const handleUninstall = async () => {
@@ -32,6 +37,20 @@ export function CardWithInStalled() {
     const handleToggleStarted = () => {
         setIsDisable(!isDisable); // 切换安装状态
     };
+
+    //日志点击事件状态
+    const LogClick = () => {
+        if (isDisable) {
+            // 打开另一个组件（这里可以控制显示状态）
+            setIsLogOpen(true); // 假设这是控制显示的状态
+        } else {
+            alert("Yes: 日志按钮正常，可以执行跳转或其他操作。");
+            // 这里可以添加跳转逻辑，例如：
+            // window.location.href = "/logs"; // 示例跳转
+        }
+    };
+
+
     return (
         <Card className="w-[560px]  h-[200px] m-2">
             <CardContent  className=" flex justify-start space-x-4 mt-9">
@@ -53,7 +72,13 @@ export function CardWithInStalled() {
                 </CardDescription>
             </CardContent>
             <CardFooter className="flex justify-end mt-3">
-                <Button variant="common" className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''} >日志</Button>
+                <Button 
+                    variant="common" 
+                    className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''}
+                    onClick={LogClick}
+                    >日志</Button>
+                <AlertLogDemo isOpen={isLogOpen} onClose={closeLog} />
+
                 <Button variant="common" className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''} >参数</Button>
                 <Button
                     variant="common"
@@ -69,8 +94,6 @@ export function CardWithInStalled() {
                     卸载
                 </Button>
                 <AlertDialogDemo isOpen={isDialogOpen} onClose={closeDialog} onConfig={handleUninstall} />
-
-                {/* <AlertDialogDemo /> */}
 
                 <Button variant="common">重启</Button>
                 
