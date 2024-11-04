@@ -30,7 +30,7 @@ export function CardWithAll() {
                 </CardDescription>
             </CardContent>
             <CardFooter className="flex justify-end">
-                <Drawer />
+                <Drawer status={""} />
             </CardFooter>
         </Card>
     )
