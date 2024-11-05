@@ -6,7 +6,7 @@ import { Tabs } from "@/components/ui/tabs";
 
 import { useEffect, useState } from "react"
 
-export function UniSearch({ onSearch }) {
+export default function UniSearch({ onSearch }) {
     const [query, setQuery] = useState("")  // 搜索框输入内容
     const [categories, setCategories] = useState([]);    // 从接口加载分类选项
     const [error, setError] = useState(""); // 新增状态管理错误提示

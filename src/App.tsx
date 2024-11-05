@@ -3,6 +3,7 @@
 import './App.css'
 // import Tabsnav from './components/tabsnav/page' 
 import MainPage from './components/main/page'
+import {CardWithInStalled} from '@/components/tabsnav/installedcard'
 
 
 
@@ -19,8 +20,8 @@ function App() {
 
         <MainPage />
 
-       
-
+        <CardWithInStalled />
+      
         {/* <Tabsnav /> */}
     </>
 
