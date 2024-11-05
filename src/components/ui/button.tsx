@@ -14,14 +14,14 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-9 px-6 py-2",
         outline:
-          "border border-input bg-gray-300 text-sm text-white shadow-sm hover:bg-white hover:text-theme-color/85 h-9 px-6 py-2",
+          "border border-input bg-white-300 text-sm text-white shadow-sm hover:bg-white hover:text-theme-color/85 h-9 px-6 py-2",
         secondary:
           "bg-secondary text-theme-color shadow-sm hover:bg-secondary/80 hover:text-theme-color h-9 px-4 py-2",
         ghost: "hover:bg-accent text-gray-600 hover:text-gray-500 h-9 px-4 py-2",
         link: "text-primary underline-offset-4 hover:underline h-9 px-6 py-2" ,
         surely: "bg-theme-color text-sm text-gray-100 shadow hover:bg-theme-color/70 h-9 px-6 py-2",
-        common:" cursor-pointer bg-theme-color text-white border-2 hover:bg-theme-color/70 text-md rounded-full m-1 px-6 py-2 ",
-        cancel:" cursor-pointer bg-gray-300 text-white border-2 hover:bg-white hover:border-theme-color/50 hover:text-theme-color/85 text-md rounded-full m-1 px-6 py-2"
+        common:" cursor-pointer bg-theme-color text-white border-2 hover:bg-theme-color/70 text-xs rounded-full m-1 px-6 py-1 ",
+        cancel:" cursor-pointer bg-white text-white border-2 hover:bg-white hover:border-theme-color/50 hover:text-theme-color/85 text-md rounded-full m-1 px-6 py-2"
       },
       size: {
         // default: "h-9 px-6 py-2",

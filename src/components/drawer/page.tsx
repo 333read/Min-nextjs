@@ -27,9 +27,9 @@ function Drawer({ status }: DrawerProps) {
 
     const getButtonStyles = () => {
         if (status === 'InUse') {
-            return 'bg-gray-500 text-gray-200 cursor-not-allowed '; // 在使用状态
+            return 'border border-input rounded-md bg-gray-300 text-sm text-white shadow-sm  h-9 px-6 py-2 cursor-not-allowed '; // 在使用状态
         } else if (status === 'Unused') {
-            return 'bg-theme-color text-white'; // 未使用状态
+            return 'bg-theme-color text-sm text-gray-100 shadow hover:bg-theme-color/70 h-9 px-6 py-2'; // 未使用状态
         }
         return 'bg-gery-500 text-white'; // 默认样式
     };
@@ -49,7 +49,7 @@ function Drawer({ status }: DrawerProps) {
                         handleInstallClick(); // 处理安装逻辑
                     }
                 }} 
-                className={` border-2 rounded-full px-5 py-2 ${getButtonStyles()}`}>
+                className={` rounded-md px-6 py-2 ${getButtonStyles()}`}>
                     {buttonText}
                 </div>
             </SheetTrigger>

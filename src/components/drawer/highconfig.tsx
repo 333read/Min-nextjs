@@ -23,16 +23,16 @@ export function HighConfig() {
             {isAdvancedSettingsEnabled && ( // 根据状态显示或隐藏文本区域
                 <>
                     <Textarea className="resize-none" placeholder="输入高级设置..." />
-                    <div className="flex justify-around">
-                                <div>
+                    <div className="flex justify-around w-full">
+                                <div className="w-1/2 px-2">
                                     <Label htmlFor='input'>CPU限制：</Label>
-                                    <Input className='w-56'/>
+                                    <Input className='sm:w-1/2 lg:w-full'/>
                                 </div>
-                                <div>
+                                <div className="w-1/2 px-2">
                                     <Label htmlFor='input'>内存限制：</Label>
-                                    <Input className='w-56'/>
+                                    <Input className='sm:w-1/2 lg:w-full'/>
                                 </div>
-                            </div>
+                    </div>
 
                 </>
                 

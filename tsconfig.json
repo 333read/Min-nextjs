@@ -12,7 +12,8 @@
     "strict": false,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "next-themes/dist/types": ["node_modules/next-themes/dist/types"]
     }
   }
 }

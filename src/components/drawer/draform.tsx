@@ -28,7 +28,7 @@ export function ProfileForm() {
                 store: false,
             },
         });
-   
+
         const onSubmit = (data: unknown) => {
             console.log(data);
             // 在这里处理表单提交逻辑
@@ -102,7 +102,7 @@ return (
                     <div className='flex justify-start space-x-3'>
                         <Button type='submit' variant='surely' className='cursor-pointer' onClick={form.handleSubmit(onSubmit)}>重启</Button>
                         <SheetClose 
-                            className='cursor-pointer border border-input rounded-md bg-gray-300 text-sm text-white shadow-sm hover:bg-white hover:text-theme-color/85 h-9 px-6 py-2'
+                            className='cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2'
                         >取消</SheetClose>
                     </div>
                 </form>

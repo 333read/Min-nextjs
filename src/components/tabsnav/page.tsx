@@ -13,7 +13,6 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 
-import { CardWithAll } from "@/components/tabsnav/allcard"
 import { CardWithInStalled } from "@/components/tabsnav/installedcard"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -30,24 +29,18 @@ const variants = {
 const ITEMS_PER_PAGE = 9;
 const ITEMS_PER_PAGE_INSTALLED = 6;
 
-// 示例数据，生成CardWithAll 组件的个数
-const allItems = Array.from({ length: 19 }, (_, index) => (
-    <CardWithAll key={`all-${index}`} />
-));
-const installedItems = Array.from({ length: 15 }, (_, index) => (
-    <CardWithInStalled key={`installed-${index}`} />
-));
+
 
 function Tabsnav() {
     
 
-    const [apps, setApps] = useState([]);
-    const [installedApps, setInstalledApps] = useState([]);
-    const [totalItems, setTotalItems] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [visibleTab, setVisibleTab] = useState("all");
-    const [currentPage, setCurrentPage] = useState({
+    const [apps, setApps] = useState([]);                   // 从接口返回的 `items` 字段，也就是所有数据列表
+    const [installedApps, setInstalledApps] = useState([]);  // 从接口返回的 `installed` 字段，也就是已安装的应用列表
+    const [totalItems, setTotalItems] = useState(0); // 从接口返回的 `total` 字段
+    const [loading, setLoading] = useState(true);     // 加载状态
+    const [error, setError] = useState('');                 // 错误信息
+    const [visibleTab, setVisibleTab] = useState("all");     // 当前显示的标签页
+    const [currentPage, setCurrentPage] = useState({         // 当前页数
         "all-all": 1,
         "all-yd": 1,
         "all-fs": 1,
@@ -63,10 +56,10 @@ function Tabsnav() {
 
     const fetchApps = async (page = 1, pageSize = 9) => {
         try {
-            const response = await fetch(`http://192.168.31.214:8080/api/v1/apps?page=${page}&page_size=${pageSize}`,
+            const response = await fetch(`http://127.0.0.1:8080/api/v1/apps?page=${page}&page_size=${pageSize}`,
                 {
                     headers: {
-                        'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3MUAP5yGxCAKefco_Wu4RcKnB0kpNgtZ2Vus-0ALbiLIe8s2i1kI7gjm9GRU_3xLT`
+                        'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3eOq6L3ec4CsjKLTbmJR5iKnB0kpNgtZ2HqRJdoZ8WqPYqX1jTr-BDF1i2kolBsRG`
                     }
                 }
             );
@@ -97,29 +90,17 @@ function Tabsnav() {
         setCurrentPage((prev) => ({ ...prev, [tab]: pages }));
     };
 
-    // 计算需要显示的卡片
-    const getCurrentItems = (tab:string) => {
-        let items;
-        if (tab.startsWith("all")) {
-            items = apps;
-        } else {
-            items = installedApps;
-        }
-        const itemsPerPage = tab.startsWith("all")? ITEMS_PER_PAGE : ITEMS_PER_PAGE_INSTALLED;
-        const startIndex = (currentPage[tab] as number - 1) * itemsPerPage;
-        return items.slice(startIndex, startIndex + itemsPerPage);
-        
-    };
     
-    const totalPages = (tab: string) => {
-        const itemsPerPage = tab.startsWith("all")? ITEMS_PER_PAGE : ITEMS_PER_PAGE_INSTALLED;
-        if (tab.startsWith("all")) {
-            return Math.ceil(allItems.length / itemsPerPage);
-        } else {
-            return Math.ceil(installedItems.length / itemsPerPage);
-        }
-
-    };
+        const totalPages = (tab) => {
+            const itemsPerPage = tab.startsWith("all") ? ITEMS_PER_PAGE : ITEMS_PER_PAGE_INSTALLED;
+            if (tab.startsWith("all")) {
+                // 使用接口返回的 total 字段计算总页数
+                return Math.ceil(totalItems / itemsPerPage);
+            } else {
+                return Math.ceil(installedApps.length / itemsPerPage);
+            }
+        };
+    
 
     return (
         <>
@@ -177,7 +158,7 @@ function Tabsnav() {
                                                                             </Avatar>
                                                                             <CardDescription className="space-y-1 text-left" >
                                                                                 <h1 className="text-lg font-medium text-slate-950">{app.name}</h1>
-                                                                                <p className="text-sm line-clamp-2">{app.description}</p>
+                                                                                <p className="text-sm line-clamp-3">{app.description}</p>
                                                                             </CardDescription>
                                                                         </CardContent>
                                                                         <CardFooter className="flex justify-end">
@@ -191,10 +172,11 @@ function Tabsnav() {
 
                                                     </div>
 
+                                                     {/* 分页组件 */}
                                                     <PaginationCom
                                                         currentPage={currentPage["all-all"]}
                                                         totalPages={totalPages("all-all")}
-                                                        onPageChange={(pages) => handlePageChange("all-all", pages)}
+                                                        onPageChange={(page) => handlePageChange("all-all", page)}
                                                     />
                                                 </motion.div>
                                             </TabsContent>
