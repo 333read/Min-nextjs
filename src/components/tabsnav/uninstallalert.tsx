@@ -24,10 +24,9 @@ export function AlertDialogDemo({ isOpen, onClose, onConfig }:AlertDialogDemoPro
             {/* <AlertDialogTrigger>Trigger</AlertDialogTrigger> */}
             <AlertDialogContent >
             <AlertDialogHeader>
-                <AlertDialogTitle>Are you uninstall sure?</AlertDialogTitle>
+                <AlertDialogTitle>卸载</AlertDialogTitle>
                 <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+                即将执行卸载操作，您是否确定要卸载此xxx插件？
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

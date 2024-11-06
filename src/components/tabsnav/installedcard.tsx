@@ -77,7 +77,7 @@ export function CardWithInStalled() {
                     className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''}
                     onClick={LogClick}
                     >日志</Button>
-                <AlertLogDemo isOpen={isLogOpen} onClose={closeLog} />
+                <AlertLogDemo isOpen={isLogOpen} onClose={closeLog} isLogOpen={false} />
 
                 <Button variant="common" className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''} >参数</Button>
                 <Button

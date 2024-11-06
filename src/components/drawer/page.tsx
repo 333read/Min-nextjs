@@ -12,6 +12,7 @@ import  { useState } from "react";
 
 interface DrawerProps {
     status: string;
+    isOpen: boolean;
 }
 
 function Drawer({ status }: DrawerProps) {
@@ -31,7 +32,7 @@ function Drawer({ status }: DrawerProps) {
         } else if (status === 'Unused') {
             return 'bg-theme-color text-sm text-gray-100 shadow hover:bg-theme-color/70 h-9 px-6 py-2'; // 未使用状态
         }
-        return 'bg-gery-500 text-white'; // 默认样式
+        return 'bg-theme-color text-white'; // 默认样式
     };
     
     const buttonText = status === 'InUse' ? "已安装" : "安装";

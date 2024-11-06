@@ -6,72 +6,66 @@ import { Tabs } from "@/components/ui/tabs";
 
 import { useEffect, useState } from "react"
 
-export default function UniSearch({ onSearch }) {
-    const [query, setQuery] = useState("")  // 搜索框输入内容
-    const [categories, setCategories] = useState([]);    // 从接口加载分类选项
-    const [error, setError] = useState(""); // 新增状态管理错误提示
-    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);//控制搜索请求的发送
+interface UniSearchProps {
+    onSearch: (query: string) => void;
+}
+export default function UniSearch({ onSearch }: UniSearchProps) {
+    const [query, setQuery] = useState("");  // 搜索框输入内容
+    const [error, setError] = useState("");  // 错误提示
+    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null); // 控制搜索请求的发送
+    const [results, setResults] = useState([]); // 存储搜索结果
 
-    useEffect(() => {       //请求获取分类选项并更新状态
-        const fetchCategories = async () => {
-            try{
-                const response = await fetch("https://api.uniswap.org/v3/coins");
-                const data = await response.json();
-                setCategories(data);
-            }catch(error){
-                console.error("获取出错",error);
-            }
-        };
-        fetchCategories();
-    }, []);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
+     // 处理输入变化
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        if (/^[\u4e00-\u9fa5A-Za-z0-9]*$/.test(value)) {
-            setError("");
-            // setQuery(value);
+        setQuery(value);  // 直接更新输入框内容
 
-            // 清除之前的 debounce
-            if (debounceTimeout) {
-                clearTimeout(debounceTimeout);
-            }
+        // 立即触发父组件的搜索
+        onSearch(value);
+    };
+    // 发起搜索请求
+    const fetchSearchResults = async (query: string) => {
+        if (!query.trim()) {
+            setResults([]); // 如果搜索内容为空，清空结果
+            return;
+        }
 
-            setQuery(value);  // 输入框内容更新
-
-            // 设置新的 debounce
-            const timeout = setTimeout(() => {
-                onSearch(value);
-            }, 1000); // 1秒钟的间隔
-            setDebounceTimeout(timeout);
-        } else {
-            // 如果输入不符合要求，清空输入框
-            setError("请输入中文、英文或数字");
-            setQuery(""); // 输入框内容清空
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/v1/apps?name_like=${query}&descript_like=${query}`);
+            const data = await response.json();
+            setResults(data); // 更新搜索结果
+        } catch (error) {
+            console.error("搜索请求出错", error);
         }
     };
 
-    // 清理 timeout
-    useEffect(() => {
-        return () => {
-            if (debounceTimeout) {
-                clearTimeout(debounceTimeout);
-            }
-        };
-    }, [debounceTimeout]);
 
     return(
         <Tabs value="search">
             <Command className="rounded-lg border shadow-md md:min-w-[280px] mt-2">
-                <CommandInput 
+            <CommandInput 
                     placeholder="允许输入中文、英文、数字..." 
                     value={query} 
                     onChange={handleChange} 
                 />
-                <div className="category-options">
-                    {categories.map((category) => (
-                        <div key={category.id}>{category.name}</div>
-                    ))}
-                </div>
+                {/* 错误提示 */}
+                {/* {error && <div className="text-red-500 mt-2">{error}</div>} */}
+
+               {/* 显示搜索结果 */}
+                {/* <div className="search-results mt-2">
+                    {results.length > 0 ? (
+                        <ul>
+                            {results.map((result) => (
+                                <li key={result.id}>
+                                    <div>{result.name}</div>
+                                    <div>{result.descript}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div>暂无搜索结果</div>
+                    )}
+                </div> */}
             </Command>
         </Tabs>
     );
