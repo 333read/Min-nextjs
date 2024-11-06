@@ -48,47 +48,44 @@ export function InStalledBtn() {
         }
     };
     return (
-        <div className="w-[560px] bg-transparent h-[200px] -mt-28 ml-32">
-        <CardContent  className=" flex justify-start space-x-4 mt-9">
-            <div className="my-auto size-10">
-                
+        <div className="w-[560px]  h-[200px] -mt-28 pl-10">
+        <CardContent  className=" flex justify-start">
+            <div className="-mb-1 size-10">
             </div>
-        
-            <CardDescription className="space-y-1 text-left">
+            <CardDescription>
                 <div className="text-lg font-medium text-slate-950">
-                
-                    <span className={isDisable?'ml-6 border-2 rounded-full border-red-700 py-1 px-2 text-lg text-red-700':'ml-6 border-2 rounded-full border-theme-color py-1 px-2 text-lg text-theme-color'}>
+                    <span className={isDisable?'ml-8 border-2 rounded-full border-red-700 py-1 px-2 text-lg text-red-700':'ml-8 border-2 rounded-full border-theme-color py-1 px-2 text-lg text-theme-color'}>
                         {isDisable ? '已停止' : '已运行'}
                     </span>
                 </div>
 
             </CardDescription>
         </CardContent>
-        <CardFooter className="flex justify-end mt-12">
-            <Button 
-                variant="common" 
-                className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''}
-                onClick={LogClick}
-                >日志</Button>
-            <AlertLogDemo isOpen={isLogOpen} onClose={closeLog} />
+        <CardFooter className="flex mt-12 ">
+                <Button 
+                    variant="common" 
+                    className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''}
+                    onClick={LogClick}
+                    >日志</Button>
+                <AlertLogDemo isOpen={isLogOpen} onClose={closeLog} />
 
-            <Button variant="common" className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''} >参数</Button>
-            <Button
-                variant="common"
-                onClick={handleToggleStarted}
-                className={isDisable ? 'bg-theme-color text-white' : ''}
-            >
-                {isDisable ? '启用' : '停止'}</Button>
-            
-            <Button 
-                variant="common"
-                onClick={openDialog} 
+                <Button variant="common" className={isDisable?'bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500':''} >参数</Button>
+                <Button
+                    variant="common"
+                    onClick={handleToggleStarted}
+                    className={isDisable ? 'bg-theme-color text-white' : ''}
                 >
-                卸载
-            </Button>
-            <AlertDialogDemo isOpen={isDialogOpen} onClose={closeDialog} onConfig={handleUninstall} />
+                    {isDisable ? '启用' : '停止'}</Button>
+                
+                <Button 
+                    variant="common"
+                    onClick={openDialog} 
+                    >
+                    卸载
+                </Button>
+                <AlertDialogDemo isOpen={isDialogOpen} onClose={closeDialog} onConfig={handleUninstall} />
 
-            <Button variant="common">重启</Button>
+                <Button variant="common">重启</Button>
             
         </CardFooter>   
 

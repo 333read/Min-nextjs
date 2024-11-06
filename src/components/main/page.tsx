@@ -134,36 +134,31 @@ function MainPage() {
             )}
 
              {/* 如果 Tab 是 "installed"，只显示已安装应用 */}
-            {/* {activeTab === "installed" && ( */}
-            <div className=" content-start grid grid-cols-3 gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
-                {/* {loading ? (
+            {activeTab === "installed" && (
+            <div className=" content-start grid grid-cols-2 gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
+                {loading ? (
                         <div>Loading...</div>
                     ) : (
-                        apps.map((app) => ( */}
-                            <Card className="w-[530px] h-[200px] ">
+                        apps.map((app) => (
+                            <Card key={app.id} className="w-[530px] h-[200px] ">
                                 <CardContent className="flex justify-start space-x-4 mt-9">
                                     <Avatar className="my-auto size-10">
-                                        <AvatarImage  />
+                                        <AvatarImage src={app.iconUrl} />
                                         <AvatarFallback>loading</AvatarFallback>
                                     </Avatar>
                                     <CardDescription className="space-y-1 text-left">
-                                        <div className="text-lg font-medium text-slate-950">
-                                            AliyunOSS 
-                                            
-                                        </div>
-                                        <p className="text-sm">
-                                        The React Framework – created and maintained by @vercel.
-                                        </p>
+                                    <h1 className="text-lg font-medium text-slate-950">{app.name}</h1>
+                                    <p className="text-sm line-clamp-3">{app.description || "No description available"} </p>
                                     </CardDescription>
                                 </CardContent>
-                                <CardFooter className="flex justify-end">
+                                <CardFooter className="flex">
                                     <InStalledBtn />
                                 </CardFooter>
                             </Card>
-                        {/* ))
-                    )} */}
+                        ))
+                    )}
             </div>
-          {/* )} */}
+          )}
 
 
             <PaginationCom currentPage={1} totalPages={2} onPageChange={(page) => console.log(`Page ${page}`)}  />

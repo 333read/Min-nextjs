@@ -20,7 +20,7 @@ function App() {
 
         <MainPage />
 
-        <CardWithInStalled />
+        {/* <CardWithInStalled /> */}
       
         {/* <Tabsnav /> */}
     </>
