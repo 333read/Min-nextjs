@@ -79,7 +79,7 @@ function MainPage() {
         setLoading(false);
     };
 
-    // 初次加载数据
+    // // 初次加载数据
     useEffect(() => {
         loadData(currentPage); // 根据 currentPage 加载数据
     }, [activeTab, selectedClass, currentPage]); 
@@ -231,7 +231,7 @@ function MainPage() {
                                 </CardDescription>
                             </CardContent>
                             <CardFooter className="flex justify-end">
-                                <Drawer status={app.status} isOpen={false} />
+                                <Drawer status={app.status} isOpen={false} app={app} loadData={loadData} />
                             </CardFooter>
                         </Card>
                     ))

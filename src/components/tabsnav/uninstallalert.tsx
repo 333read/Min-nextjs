@@ -27,8 +27,7 @@ export function AlertDialogDemo({ isOpen, onClose, app, onUninstall }: AlertDial
         try {
             const requestBody = {
                 // 根据接口要求传递相关的请求体内容
-                data: "", // 示例，传递卸载原因或其他信息
-                // 你还可以传递其他字段
+                data: "",
             };
             // 发送 DELETE 请求来卸载应用
             const response = await fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}`, {

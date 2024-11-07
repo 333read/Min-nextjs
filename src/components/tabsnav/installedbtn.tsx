@@ -109,7 +109,10 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
                         {isLogDemoOpen && <AlertLogDemo isOpen={isLogDemoOpen} onClose={closeLog} isLogOpen={false} />}
                         {isLogHaveOpen && <AlertLogHave isOpen={isLogHaveOpen} onClose={closeLogHave} isLogOpen={false} />}
 
-                        <Button variant="common" onClick={openDrawer}>
+                        <Button 
+                            variant="common" 
+                            onClick={openDrawer}  
+                            className={isDisable ? "bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500" : ""}>
                             参数
                         </Button>
                         <EditDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
@@ -119,7 +122,7 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
                         </Button>
 
                         <Button variant="common" onClick={openDialog}>
-                            卸载！
+                            卸载
                         </Button>
                         <AlertDialogDemo 
                             isOpen={isDialogOpen} 
