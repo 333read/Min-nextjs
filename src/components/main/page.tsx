@@ -1,8 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-    ToggleGroup,
-    ToggleGroupItem,
-} from "@/components/ui/toggle-group"
 import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Drawer from "@/components/drawer/page";
@@ -43,7 +39,7 @@ const fetchAppsData = async (tab: string, className = '', currentPage: number, p
         const response = await fetch(url,
             {
                 headers: {
-                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3eOq6L3ec4CsjKLTbmJR5iKnB0kpNgtZ2HqRJdoZ8WqPYqX1jTr-BDF1i2kolBsRG`
+                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj`
                 }
             }
         );
@@ -155,14 +151,40 @@ function MainPage() {
                 <Skeleton className="h-8 w-20 mb-3" />
             </div>
             ) : (
-                <ScrollArea className="w-306 whitespace-nowrap rounded-md">
-                    <ToggleGroup type="single" className="justify-start mb-3" value={selectedClass} onValueChange={setSelectedClass}>
-                        <ToggleGroupItem value="allson">ALL</ToggleGroupItem>
-                        <ToggleGroupItem value="database">yundisk</ToggleGroupItem>
-                        <ToggleGroupItem value="fileselect">fileselect</ToggleGroupItem>
-                        <ToggleGroupItem value="tool">tool</ToggleGroupItem>
-                        <ToggleGroupItem value="note">note</ToggleGroupItem>
-                    </ToggleGroup>
+                <ScrollArea className="w-[606px] overflow-x-auto">
+                {/* 使用 Button 代替 ToggleGroupItem */}
+                <div className="flex -space-x-2 mb-3">
+                        <Button
+                            variant={selectedClass === "allson" ? "common" : "default"}
+                            onClick={() => setSelectedClass("allson")}
+                        >
+                            ALL
+                        </Button>
+                        <Button
+                            variant={selectedClass === "database" ? "common" : "default"}
+                            onClick={() => setSelectedClass("database")}
+                        >
+                            yundisk
+                        </Button>
+                        <Button
+                            variant={selectedClass === "fileselect" ? "common" : "default"}
+                            onClick={() => setSelectedClass("fileselect")}
+                        >
+                            fileselect
+                        </Button>
+                        <Button
+                            variant={selectedClass === "tool" ? "common" : "default"}
+                            onClick={() => setSelectedClass("tool")}
+                        >
+                            tool
+                        </Button>
+                        <Button
+                            variant={selectedClass === "note" ? "common" : "default"}
+                            onClick={() => setSelectedClass("note")}
+                        >
+                            note
+                        </Button>
+                    </div>
                     <ScrollBar orientation="horizontal" />
                 </ScrollArea>
             )}
@@ -174,7 +196,6 @@ function MainPage() {
             ) : (
             <UniSearch onSearch={handleSearch} /> 
             )}
-
             </div>
 
             {/* 如果当前 Tab 是 "all" 或 "allson" 且未选择 class，显示 all 类应用列表 */}
@@ -225,7 +246,7 @@ function MainPage() {
                             <div>Loading...</div>
                         ) : (
                             apps.map((app) => (
-                                < InStalledBtn key={app.id} app={app}/>
+                                < InStalledBtn key={app.id} app={app} loadData={loadData}/>
                             ))
                         )}
                 </div>

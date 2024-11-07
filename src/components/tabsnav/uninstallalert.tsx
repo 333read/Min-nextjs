@@ -7,32 +7,73 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    // AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-// import { Button } from "@/components/ui/button"
+import { Item } from "@/type.d/common"
+import { useState } from "react"
 
 interface AlertDialogDemoProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfig: () => void;
+    app: Item
+    isOpen: boolean
+    onClose: () => void
+    onUninstall: () => void
 }
 
+export function AlertDialogDemo({ isOpen, onClose, app, onUninstall }: AlertDialogDemoProps) {
+    const [isLoading, setIsLoading] = useState(false)
 
-export function AlertDialogDemo({ isOpen, onClose, onConfig }:AlertDialogDemoProps) {
+    // 卸载应用
+    const handleUninstall = async () => {
+        setIsLoading(true)
+        try {
+            const requestBody = {
+                // 根据接口要求传递相关的请求体内容
+                data: "", // 示例，传递卸载原因或其他信息
+                // 你还可以传递其他字段
+            };
+            // 发送 DELETE 请求来卸载应用
+            const response = await fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}`, {
+                method: "DELETE",
+                headers: {
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj", // 如果需要 token，记得替换为实际的 token
+                },
+                body: JSON.stringify(requestBody), 
+            }
+        )
+            const data = await response.json()
+
+            if (data.code === 200) {
+                onUninstall() // 卸载成功后，执行回调函数
+                onClose() // 关闭对话框
+                
+            } else {
+                alert(data.msg) // 异常情况，显示错误信息
+            }
+        } catch (error) {
+            console.error("卸载应用失败:", error)
+            alert("卸载失败")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
-        <AlertDialog open={isOpen} onOpenChange={onClose}>
-            {/* <AlertDialogTrigger>Trigger</AlertDialogTrigger> */}
-            <AlertDialogContent >
-            <AlertDialogHeader>
-                <AlertDialogTitle>卸载</AlertDialogTitle>
-                <AlertDialogDescription>
-                即将执行卸载操作，您是否确定要卸载此xxx插件？
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogAction onClick={onConfig}>确认</AlertDialogAction>
-                <AlertDialogCancel onClick={onClose}>取消</AlertDialogCancel>
-            </AlertDialogFooter>
+        <AlertDialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>卸载</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        即将执行卸载操作，您是否确定要卸载此 {app.name} 插件？
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction
+                        onClick={handleUninstall} // 在确认按钮上调用 handleUninstall
+                        disabled={isLoading} // 如果正在加载，禁用按钮
+                    >
+                        {isLoading ? "卸载中..." : "确认"}
+                    </AlertDialogAction>
+                    <AlertDialogCancel onClick={onClose}>取消</AlertDialogCancel>
+                </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
     )
