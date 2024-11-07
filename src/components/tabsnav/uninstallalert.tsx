@@ -62,7 +62,7 @@ export function AlertDialogDemo({ isOpen, onClose, app, onUninstall }: AlertDial
                 <AlertDialogHeader>
                     <AlertDialogTitle>卸载</AlertDialogTitle>
                     <AlertDialogDescription>
-                        即将执行卸载操作，您是否确定要卸载此 {app.name} 插件？
+                        即将执行卸载操作，您是否确定要卸载此 {app.name} 插件吗？
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

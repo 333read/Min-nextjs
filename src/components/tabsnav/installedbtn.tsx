@@ -119,7 +119,7 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
                         </Button>
 
                         <Button variant="common" onClick={openDialog}>
-                            卸载
+                            卸载！
                         </Button>
                         <AlertDialogDemo 
                             isOpen={isDialogOpen} 

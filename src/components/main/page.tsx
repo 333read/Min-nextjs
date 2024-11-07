@@ -70,7 +70,7 @@ function MainPage() {
 
 
     // 请求数据
-    const loadData = async (page: number = currentPage ) => {
+    const loadData = async (page: number = currentPage) => {
         setLoading(true);
         const data = await fetchAppsData(activeTab, selectedClass, page, pageSize);
         setApps(data.items); // 设置获取到的数据
