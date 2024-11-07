@@ -14,7 +14,7 @@ import EditDrawer from "@/components/drawer/editpage"
 import { Item } from "@/type.d/common"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export function InStalledBtn({ app }: { app: Item }) {
+export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => void }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isLogDemoOpen, setIsLogDemoOpen] = useState(false)
     const [isLogHaveOpen, setIsLogHaveOpen] = useState(false)
@@ -30,6 +30,7 @@ export function InStalledBtn({ app }: { app: Item }) {
     const handleUninstall = async () => {
         setIsLoading(true)
         await new Promise(resolve => setTimeout(resolve, 3000)) // 模拟卸载过程
+        loadData(); // 卸载完成后触发 loadData 刷新数据
         setIsLoading(false)
         closeDialog() // 关闭对话框
     }
@@ -120,7 +121,12 @@ export function InStalledBtn({ app }: { app: Item }) {
                         <Button variant="common" onClick={openDialog}>
                             卸载
                         </Button>
-                        <AlertDialogDemo isOpen={isDialogOpen} onClose={closeDialog} app={app} onUninstall={handleUninstall} />
+                        <AlertDialogDemo 
+                            isOpen={isDialogOpen} 
+                            onClose={closeDialog} 
+                            app={app} 
+                            onUninstall={handleUninstall} 
+                            />
 
                         <Button variant="common">重启</Button>
                     </>
