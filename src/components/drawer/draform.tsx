@@ -14,136 +14,175 @@ import {
 import { SheetClose } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label" 
+import { Label } from "@/components/ui/label"
 import { HighConfig } from '@/components/drawer/highconfig'
 import { Item } from "@/type.d/common";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface ProfileFormProps {
     app: Item;  // 接收 app 数据
     loadData: () => void;  // 接收 loadData 函数
+    setDockerCompose: React.Dispatch<React.SetStateAction<string>>;
+    setCpuLimit: React.Dispatch<React.SetStateAction<string>>;
+    setMemoryLimit: React.Dispatch<React.SetStateAction<string>>;
+    onInstallSuccess: () => void; // 新增回调
 }
 
-export function ProfileForm( {app, loadData} : ProfileFormProps) {
+export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
     const [dockerCompose, setDockerCompose] = useState<string>("");  // 存储docker_compose内容
     const [cpuLimit, setCpuLimit] = useState<string>("1");  // 默认值为 1
     const [memoryLimit, setMemoryLimit] = useState<string>("0");  // 默认值为 120M
     const [loading, setLoading] = useState<boolean>(false);  // 加载状态
     const [error, setError] = useState<string>("");  // 错误信息
     const [successMessage, setSuccessMessage] = useState<string>("");
-    const [forFormFields, setForFormFields] = useState<any[]>([]); // 保存 form_fields 数据
+    const [formFields, setFormFields] = useState<any[]>([]);  // 存储 form_fields 数据
     
     const form = useForm({
-            defaultValues: {
-                username: "",
-                ossAccessKeyId: "",
-                ossAccessKeySecret: "",
-                store: false,
-            },
-        });
+        defaultValues: {},
+    });
 
-        //    // 更新 form_fields 数据
-        const handleFieldsUpdate = (fields: any[]) => {
-            // setForFormFields(fields); // 将 form_fields 数据存储到本地状态   ?会一直请求接口
-            console.log(fields); // 将 form_fields 数据存储到本地状态
-        };
+    const { setValue, handleSubmit, formState: { errors } } = form;
 
-        //点击重启按钮
-        const handleRestart = async () => {
-                setLoading(true);
-                setError(""); //清除之前的错误信息
-                setSuccessMessage(""); //清除之前的成功信息
-                try {
+    // 发起请求获取 form_fields 内容
+    useEffect(() => {
+        if (app.key) {
+            setLoading(true); // 开始加载
+            setError(""); // 清空之前的错误
 
-                    // 构建请求体
-                    const requestBody = {
-                        cpus: cpuLimit,
-                        docker_compose: dockerCompose,
-                        memory_limit: memoryLimit,
-                        params: {}
-                    };
+            // 发起 GET 请求
+            fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}/detail`, {
+                headers: {
+                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj`
+                }
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("请求失败");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("API Response:", data); // 调试：检查返回的数据
+                setDockerCompose(data.data.docker_compose || "");
+                setCpuLimit(data.data.params.cpu_limit || "");
+                setMemoryLimit(data.data.params.memory_limit || "");
 
-                    // 发送 POST 请求安装
-                    const response = await fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "token": `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj`,
-                        },
-                        body: JSON.stringify(requestBody),  // 将请求体包装成字符串
-                    });
+                // 获取 form_fields 数组并存储
+                setFormFields(data.data.params.form_fields || []);
 
-                    const result = await response.json();
-                    if (response.ok) {
-                        // 请求成功，显示成功消息
-                        setSuccessMessage("安装成功！");
-                        loadData();    
-                    } else {
-                        // 请求失败，显示错误消息
-                        setError(result.message || "请求失败，请稍后重试");
-                    }
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    } catch (error) {
-                        // 捕获网络错误
-                        setError("网络错误，请检查网络连接");
-                    } finally {
-                        setLoading(false); // 请求完成，无论成功或失败都需要关闭加载状态
-                    }
+                // 设置 formFields 的默认值
+                data.data.params.form_fields.forEach((field: any) => {
+                    setValue(field.name, field.default || ""); // 设置每个字段的默认值
+                });
+
+                setLoading(false); // 请求完成
+            })
+            .catch((err) => {
+                setError("请求失败，请稍后重试"); // 错误处理
+                setLoading(false);
+            });
+        }
+    }, [app.key,setValue]);
+
+    // 点击重启按钮，进行安装操作
+    const handleRestart = async () => {
+
+        // 检查是否有任何验证错误
+        const hasErrors = Object.values(errors).some((error) => error);
+
+        if (hasErrors) {
+            // 如果有错误，显示提示信息
+            setError("所有字段都必须填写！");
+            return;
+        }
+
+        setLoading(true);
+        setError(""); // 清除之前的错误信息
+        setSuccessMessage(""); // 清除之前的成功信息
+        try {
+            // 构建请求体
+            const requestBody = {
+                cpus: cpuLimit,
+                docker_compose: dockerCompose,
+                memory_limit: memoryLimit,
+                params: {} // 可以根据需要填充 params
+            };
+
+            // 发送 POST 请求安装
+            const response = await fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj`,
+                },
+                body: JSON.stringify(requestBody),  // 将请求体包装成字符串
+            });
+
+            console.log(response); // 调试：检查返回的数据
+
+            const result = await response.json();
+            if (response.ok) {
+                // 请求成功，显示成功消息
+                setSuccessMessage("安装成功！");
+                onInstallSuccess(); 
+            } else {
+                // 请求失败，显示错误消息
+                setError(result.message || "请求失败，请稍后重试");
+            }
+        } catch (error) {
+            // 捕获网络错误
+            setError("网络错误，请检查网络连接");
+        } finally {
+            setLoading(false); // 请求完成，无论成功或失败都需要关闭加载状态
+        }
     };
 
-
     return (
-            <Form {...form}>
-                <form className="space-y-8">
-                        {/* 动态渲染 form_fields */}
-                        {forFormFields.map((field, index) => (
-                            <FormField key={index} control={form.control} name={field.name || `field_${index}`} render={({ field: formField }) => (
-                                <FormItem>
-                                    <FormLabel>{field.label || "未设置"}</FormLabel>
-                                    <FormControl>
-                                        <Input 
-                                            placeholder={field.default || "请输入..."} 
-                                            {...formField} 
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                            rules={{
-                                required: "* 输入不能为空", // 这里添加必填验证
-                            }}
-                            />
-                        ))}
+        <Form {...form} onSubmit={handleSubmit(handleRestart)}>
+            <form className="space-y-8">
+                {/* 动态渲染 form_fields */}
+                {formFields.map((field, index) => (
+                    <FormItem key={index}>
+                        <FormLabel >{field.label}</FormLabel>
+                        <FormControl>
+                                <Input
+                                    id={field.name} // 使用 name 作为 id
+                                    placeholder={ "请输入..."} 
+                                    defaultValue={field.default || ""} // 设置默认值
+                                />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                ))}
+                
+                
 
-                        <FormItem>
-                            <div  className="flex items-center space-x-2">
-                                <Checkbox id="store" />
-                                <Label htmlFor="store">默认储存</Label>
-                            </div>
-                        </FormItem>
-
-                        <FormItem>
-                            <HighConfig
-                                app={app}
-                                dockerCompose={dockerCompose}
-                                cpuLimit={cpuLimit}
-                                memoryLimit={memoryLimit}
-                                setDockerCompose={setDockerCompose}
-                                setCpuLimit={setCpuLimit}
-                                setMemoryLimit={setMemoryLimit}  
-                                onFieldsUpdate={handleFieldsUpdate}  // 传递回调函数    
-                                />  
-                        </FormItem>
-                        
-                    
-                    <div className='flex justify-start space-x-3'>
-                        <Button type='submit' variant='surely' className='cursor-pointer' onClick={handleRestart}>重启</Button>
-                        <SheetClose 
-                            className='cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2'
-                        >取消</SheetClose>
+                <FormItem>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="store" />
+                        <Label htmlFor="store">默认储存</Label>
                     </div>
-                </form>
-            </Form>
-    )
+                </FormItem>
 
+                <FormItem>
+                    <HighConfig
+                        app={app}
+                        dockerCompose={dockerCompose}
+                        cpuLimit={cpuLimit}
+                        memoryLimit={memoryLimit}
+                        setDockerCompose={setDockerCompose}
+                        setCpuLimit={setCpuLimit}
+                        setMemoryLimit={setMemoryLimit}
+                    />
+                </FormItem>
+
+                <div className="flex justify-start space-x-3">
+                    <Button type="submit" variant="surely" className="cursor-pointer" onClick={handleRestart}>重启</Button>
+                    <SheetClose
+                        className="cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2"
+                    >取消</SheetClose>
+                </div>
+            </form>
+        </Form>
+    );
 }

@@ -22,6 +22,7 @@ function Drawer({ status,app,loadData}: DrawerProps) {
 
 
     const [isOpen, setIsOpen] = useState(false);
+    const [buttonText, setButtonText] = useState(status === 'InUse' ? '已安装' : '安装'); // 用状态管理按钮文字
 
     const handleInstallClick = () => {
         if (status === 'Unused') {
@@ -37,8 +38,12 @@ function Drawer({ status,app,loadData}: DrawerProps) {
         }
         return 'bg-theme-color text-white'; // 默认样式
     };
+
+    const handleInstallSuccess = () => {
+        setButtonText("已安装"); // 安装成功后更新按钮文字
+    };
     
-    const buttonText = status === 'InUse' ? "已安装" : "安装";
+    
 
     return (
         <>
@@ -64,7 +69,10 @@ function Drawer({ status,app,loadData}: DrawerProps) {
                     </SheetDescription>
                     <ProfileForm 
                         app={app} 
-                        loadData={loadData} />
+                        loadData={loadData} 
+                        onInstallSuccess={handleInstallSuccess}  
+                        
+                        />
                 </SheetHeader>
             </SheetContent>
         </Sheet>
