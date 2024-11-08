@@ -9,6 +9,7 @@ import {InStalledBtn} from "@/components/tabsnav/installedbtn";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Item } from "@/type.d/common";
+import { motion, AnimatePresence } from "framer-motion"; // 引入 framer-motion
 
 
 const fetchAppsData = async (tab: string, className = '', currentPage: number, pageSize = 9 )=> {
@@ -31,8 +32,8 @@ const fetchAppsData = async (tab: string, className = '', currentPage: number, p
     }
 
      // 如果选择了 className，且 tab 是 "installed"，请求带有类别的应用
-     if (className && tab === 'installed' && className !== 'installed' && className !== 'allson') {
-        url = `http://127.0.0.1:8080/api/v1/apps?class=${className}&page=${currentPage}&page_size=${pageSize}`;
+    else if (className && tab === 'installed' && className !== 'installed' && className !== 'allson') {
+        url = `http://127.0.0.1:8080/api/v1/apps/installed?class=${className}&page=${currentPage}&page_size=${pageSize}`;
     }
 
     try {
@@ -114,38 +115,50 @@ function MainPage() {
     return (
 
         <>
-            <div className="flex -space-x-1">
+            <AnimatePresence mode="wait">
+            <div key="b1" className="flex -space-x-1">
                 {/* 使用 Button 代替 ToggleGroupItem */}
                 {/* 按钮部分：如果正在加载，显示 Skeleton 占位符 */}
                 {loading ? (
-                    <div className="flex -space-x-1">
+                    <div key="b11" className="flex -space-x-1">
                     <Skeleton className="h-10 w-24" />
                     <Skeleton className="h-10 w-24" />
                     </div>
                 ) : (
                 <>
+                <motion.div
+                        key="Aoading"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1 }}
+                        >
                 <Button
                     className="text-md"
-                    variant={activeTab === "installed" ? "default" : "common"}
+                    variant={activeTab === "all" ? "common" : "default"}
                     onClick={() => handleTabChange("all")}
                 >
                     ALL
                 </Button>
                 <Button
                     className="text-md"
-                    variant={activeTab === "all" ? "default" : "common"}
+                    variant={activeTab === "installed" ? "common" : "default"}
                     onClick={() => handleTabChange("installed")}
                 >
                     Installed
                 </Button>
+                </motion.div>
                 </>
                 )}
             </div>
+            </AnimatePresence>
 
             <div className="p-2 border-2 border-gray-300">
-            <div className="flex justify-between items-center mb-3">
+            
+            <AnimatePresence mode="wait">
+            <div key="b2" className="flex justify-between items-center mb-3">
             {loading ? (
-            <div className="flex w-306 whitespace-nowrap rounded-md">
+            <div key="b22" className="flex w-306 whitespace-nowrap rounded-md">
                 <Skeleton className="h-8 w-20 mb-3" />
                 <Skeleton className="h-8 w-20 mb-3" />
                 <Skeleton className="h-8 w-20 mb-3" />
@@ -154,6 +167,13 @@ function MainPage() {
                 <ScrollArea className="w-[606px] overflow-x-auto">
                 {/* 使用 Button 代替 ToggleGroupItem */}
                 <div className="flex -space-x-2 mb-3">
+                    <motion.div
+                        key="Boading"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1 }}
+                        >
                         <Button
                             variant={selectedClass === "allson" ? "common" : "default"}
                             onClick={() => setSelectedClass("allson")}
@@ -184,6 +204,7 @@ function MainPage() {
                         >
                             note
                         </Button>
+                        </motion.div>
                     </div>
                     <ScrollBar orientation="horizontal" />
                 </ScrollArea>
@@ -197,13 +218,23 @@ function MainPage() {
             <UniSearch onSearch={handleSearch} /> 
             )}
             </div>
+            </AnimatePresence>
 
+
+            <AnimatePresence mode="wait">
             {/* 如果当前 Tab 是 "all" 或 "allson" 且未选择 class，显示 all 类应用列表 */}
             {(activeTab === "all" && selectedClass !== "installed") && (
-            <div className=" content-start grid grid-cols-3 gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
+
+            <div key="b3" className=" content-start grid grid-cols-3 gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
             {loading ? (
-                    // 加载状态显示 Skeleton 占位符
                     Array.from({ length: 9 }).map((_, index) => (
+                        <motion.div
+                        key={"a"+index}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        >
                         <Card key={index} className="w-[377px] h-[200px]">
                             <CardContent className="flex justify-start space-x-4 mt-9">
                                 <Skeleton className="h-12 w-12 rounded-full" />
@@ -216,9 +247,20 @@ function MainPage() {
                                 <Skeleton className="h-6 w-24" />
                             </CardFooter>
                         </Card>
+                        </motion.div>
                     ))
                 ) : (
+                    
                     apps.map((app) => (
+                        
+                        <motion.div
+                        key={"d"+app.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.7 }}
+                        >
+
                         <Card key={app.id} className="w-[377px] h-[200px] ">
                             <CardContent className="flex justify-start space-x-4 mt-9">
                                 <Avatar className="my-auto size-10">
@@ -234,23 +276,45 @@ function MainPage() {
                                 <Drawer status={app.status} isOpen={false} app={app} loadData={loadData} />
                             </CardFooter>
                         </Card>
+                        </motion.div>
                     ))
                 )}
             </div>
+           
             )}
+            
 
              {/* 如果 Tab 是 "installed"，只显示已安装应用 */}
             {activeTab === "installed" &&  (
+                <motion.div
+                key="eoading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                >
             <div className=" content-start grid grid-cols-2 gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
                 {loading ? (
                             <div>Loading...</div>
                         ) : (
+                            
                             apps.map((app) => (
+                                <motion.div
+                                    key={"fo"+app.id}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.7 }}
+                                    >
                                 < InStalledBtn key={app.id} app={app} loadData={loadData}/>
+                                </motion.div>
                             ))
+                            
                         )}
                 </div>
+                </motion.div>
                 )}
+            </AnimatePresence>
 
                 {/* 分页组件 */}
                 <PaginationCom

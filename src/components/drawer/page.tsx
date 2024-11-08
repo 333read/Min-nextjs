@@ -62,7 +62,9 @@ function Drawer({ status,app,loadData}: DrawerProps) {
                     <SheetTitle className='ml-9 -mt-1.5 text-gray-700'>返回</SheetTitle>
                     <SheetDescription className='pt-3'>
                     </SheetDescription>
-                    <ProfileForm app={app} loadData={loadData} />
+                    <ProfileForm 
+                        app={app} 
+                        loadData={loadData} />
                 </SheetHeader>
             </SheetContent>
         </Sheet>
