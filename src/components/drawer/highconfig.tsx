@@ -11,9 +11,9 @@ interface HighConfigProps {
     dockerCompose: string;  // dockerCompose 状态
     cpuLimit: string;  // CPU 限制
     memoryLimit: string;  // 内存限制
-    setDockerCompose: React.Dispatch<React.SetStateAction<string>>;  // 更新 dockerCompose 的函数
-    setCpuLimit: React.Dispatch<React.SetStateAction<string>>;  // 更新 cpuLimit 的函数
-    setMemoryLimit: React.Dispatch<React.SetStateAction<string>>;  // 更新 memoryLimit 的函数
+    setDockerCompose: (value: string) => void;  // 设置 dockerCompose 状态
+    setCpuLimit: (value: string) => void;  // 设置 CPU 限制
+    setMemoryLimit: (value: string) => void;  // 设置内存限制
 
 }
 
@@ -58,6 +58,7 @@ export function HighConfig(
                                     <Label htmlFor='input'>CPU限制：</Label>
                                     <Input 
                                         className='sm:w-1/2 lg:w-full'
+                                        id="cpuLimit"
                                         value={cpuLimit} // 绑定cpuLimit状态
                                         onChange={(e) => setCpuLimit(e.target.value)} // 更新状态
                                         placeholder="1"
@@ -67,6 +68,7 @@ export function HighConfig(
                                     <Label htmlFor='input'>内存限制：</Label>
                                     <Input 
                                         className='sm:w-1/2 lg:w-full'
+                                        id="memoryLimit"
                                         value={memoryLimit} // 绑定cpuLimit状态
                                         onChange={(e) => setMemoryLimit(e.target.value) } // 更新状态
                                         placeholder="120m 或 12g"

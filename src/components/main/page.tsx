@@ -225,7 +225,7 @@ function MainPage() {
             {/* 如果当前 Tab 是 "all" 或 "allson" 且未选择 class，显示 all 类应用列表 */}
             {(activeTab === "all" && selectedClass !== "installed") && (
 
-            <div key="b3" className=" content-start grid grid-cols-3 gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
+            <div key="b3" className=" content-start grid gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
             {loading ? (
                     Array.from({ length: 9 }).map((_, index) => (
                         <motion.div
@@ -261,7 +261,7 @@ function MainPage() {
                         transition={{ duration: 0.7 }}
                         >
 
-                        <Card key={app.id} className="w-[377px] h-[200px] ">
+                        <Card key={app.id} className="w-[377px] h-[200px]">
                             <CardContent className="flex justify-start space-x-4 mt-9">
                                 <Avatar className="my-auto size-10">
                                     <AvatarImage src={app.icon} />

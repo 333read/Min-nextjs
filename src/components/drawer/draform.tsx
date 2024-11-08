@@ -22,11 +22,10 @@ import { useEffect, useState } from "react"
 interface ProfileFormProps {
     app: Item;  // 接收 app 数据
     loadData: () => void;  // 接收 loadData 函数
-    setDockerCompose: React.Dispatch<React.SetStateAction<string>>;
-    setCpuLimit: React.Dispatch<React.SetStateAction<string>>;
-    setMemoryLimit: React.Dispatch<React.SetStateAction<string>>;
     onInstallSuccess: () => void; // 新增回调
 }
+
+
 
 export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
     const [dockerCompose, setDockerCompose] = useState<string>("");  // 存储docker_compose内容
@@ -64,16 +63,15 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
             .then((data) => {
                 console.log("API Response:", data); // 调试：检查返回的数据
                 setDockerCompose(data.data.docker_compose || "");
-                setCpuLimit(data.data.params.cpu_limit || "");
-                setMemoryLimit(data.data.params.memory_limit || "");
 
                 // 获取 form_fields 数组并存储
                 setFormFields(data.data.params.form_fields || []);
-
                 // 设置 formFields 的默认值
-                data.data.params.form_fields.forEach((field: any) => {
-                    setValue(field.name, field.default || ""); // 设置每个字段的默认值
-                });
+                // 设置 formFields 的默认值
+            data.data.params.form_fields.forEach((field: Field, index: number) => {
+                const fieldName = field.name || `generated-name-${field.label.replace(/\s+/g, '-').toLowerCase()}-${index}`;
+                setValue(fieldName, field.default || ""); // 设置每个字段的默认值
+            });
 
                 setLoading(false); // 请求完成
             })
@@ -86,45 +84,42 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
 
     // 点击重启按钮，进行安装操作
     const handleRestart = async () => {
-
-        // 检查是否有任何验证错误
-        const hasErrors = Object.values(errors).some((error) => error);
-
-        if (hasErrors) {
-            // 如果有错误，显示提示信息
-            setError("所有字段都必须填写！");
-            return;
-        }
-
         setLoading(true);
         setError(""); // 清除之前的错误信息
         setSuccessMessage(""); // 清除之前的成功信息
+    
+        // 校验表单，确保字段不为空
+        const isValid = await form.trigger(); // 校验所有表单字段
+        if (!isValid) {
+            setError("请填完整的字段信息！"); // 提示用户填写完整字段
+            setLoading(false);
+            return;
+        }
+    
         try {
             // 构建请求体
             const requestBody = {
                 cpus: cpuLimit,
                 docker_compose: dockerCompose,
                 memory_limit: memoryLimit,
-                params: {} // 可以根据需要填充 params
+                params: {}, // 可根据需要填充参数
             };
-
-            // 发送 POST 请求安装
+    
+            // 发送 POST 请求进行安装
             const response = await fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "token": `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj`,
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj", // 示例 token
                 },
-                body: JSON.stringify(requestBody),  // 将请求体包装成字符串
+                body: JSON.stringify(requestBody),
             });
-
-            console.log(response); // 调试：检查返回的数据
-
+    
             const result = await response.json();
             if (response.ok) {
                 // 请求成功，显示成功消息
                 setSuccessMessage("安装成功！");
-                onInstallSuccess(); 
+                onInstallSuccess(); // 成功时调用回调函数
             } else {
                 // 请求失败，显示错误消息
                 setError(result.message || "请求失败，请稍后重试");
@@ -136,27 +131,41 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
             setLoading(false); // 请求完成，无论成功或失败都需要关闭加载状态
         }
     };
+    
 
     return (
         <Form {...form} onSubmit={handleSubmit(handleRestart)}>
             <form className="space-y-8">
                 {/* 动态渲染 form_fields */}
-                {formFields.map((field, index) => (
-                    <FormItem key={index}>
-                        <FormLabel >{field.label}</FormLabel>
-                        <FormControl>
-                                <Input
-                                    id={field.name} // 使用 name 作为 id
-                                    placeholder={ "请输入..."} 
-                                    defaultValue={field.default || ""} // 设置默认值
-                                />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                ))}
-                
-                
+                {formFields.map((field, index) => {
+          // 如果 field 没有 name 属性，生成一个默认的 name
+            const fieldName = field.name || `generated-name-${field.label.replace(/\s+/g, '-').toLowerCase()}-${index}`;
 
+            return (
+                <FormItem key={index}>
+                <FormLabel>{field.label}</FormLabel>
+                <FormControl>
+                    <Input
+                    id={fieldName}
+                    placeholder="请输入..."
+                    {...form.register(fieldName, {
+                        required: `${field.label} 不能为空`,
+                        onChange: (e) => {
+                            // 触发 onChange 时重新校验（即时校验）
+                            form.trigger(fieldName);
+                          },
+                          onBlur: () => {
+                            // 输入框失去焦点时触发校验
+                            form.trigger(fieldName);
+                          }
+                    })}
+                    />
+                </FormControl>
+                <FormMessage>{errors[fieldName]?.message}</FormMessage>
+                </FormItem>
+            );
+            })}
+                
                 <FormItem>
                     <div className="flex items-center space-x-2">
                         <Checkbox id="store" />
@@ -165,15 +174,15 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
                 </FormItem>
 
                 <FormItem>
-                    <HighConfig
-                        app={app}
-                        dockerCompose={dockerCompose}
-                        cpuLimit={cpuLimit}
-                        memoryLimit={memoryLimit}
-                        setDockerCompose={setDockerCompose}
-                        setCpuLimit={setCpuLimit}
-                        setMemoryLimit={setMemoryLimit}
-                    />
+                <HighConfig
+                    app={app}
+                    dockerCompose={dockerCompose}
+                    cpuLimit={cpuLimit}  // 传递 cpuLimit
+                    memoryLimit={memoryLimit}  // 传递 memoryLimit
+                    setDockerCompose={setDockerCompose}
+                    setCpuLimit={setCpuLimit}
+                    setMemoryLimit={setMemoryLimit}
+                />
                 </FormItem>
 
                 <div className="flex justify-start space-x-3">
