@@ -12,7 +12,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Item } from "@/type.d/common";
 import { motion, AnimatePresence } from "framer-motion"; // 引入 framer-motion
 
-
 const fetchAppsData = async (tab: string, className = '', currentPage: number, pageSize = 9, query: string = '') => {
     let url = '';
 
@@ -90,7 +89,7 @@ function MainPage() {
     useEffect(() => {
         // 设置延迟时间（比如 3 秒），延迟一下页面加载会更丝滑
         const timer = setTimeout(() => {
-            console.log("这个方法延迟了 2 秒后触发！");
+            console.log("这个方法延迟了3秒后触发！");
         }, 3000);
         loadData(searchQuery, currentPage); // 根据 currentPage 加载数据
     }, [activeTab, selectedClass, currentPage, searchQuery]);
@@ -118,7 +117,6 @@ function MainPage() {
 
     const totalPages = Math.ceil(totalItems / pageSize); // 确保分页计算是向上取整
     return (
-
         <>
             <AnimatePresence mode="wait">
                 <div key="b1" className="flex -space-x-1">
