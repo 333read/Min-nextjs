@@ -83,10 +83,9 @@ function MainPage() {
 
     // 初次加载数据
     useEffect(() => {
-        // 设置延迟时间（比如 2 秒）
+        // 设置延迟时间（比如 2 秒），延迟一下页面加载会更丝滑
         const timer = setTimeout(() => {
         console.log("这个方法延迟了 2 秒后触发！");
-        // 在这里执行你需要延迟的操作
         }, 3000);
         loadData(currentPage); // 根据 currentPage 加载数据
     }, [activeTab, selectedClass, currentPage]); 
@@ -190,13 +189,13 @@ function MainPage() {
                             variant={selectedClass === "database" ? "common" : "default"}
                             onClick={() => setSelectedClass("database")}
                         >
-                            yundisk
+                            database
                         </Button>
                         <Button
-                            variant={selectedClass === "fileselect" ? "common" : "default"}
-                            onClick={() => setSelectedClass("fileselect")}
+                            variant={selectedClass === "oss" ? "common" : "default"}
+                            onClick={() => setSelectedClass("oss")}
                         >
-                            fileselect
+                            oss
                         </Button>
                         <Button
                             variant={selectedClass === "tool" ? "common" : "default"}

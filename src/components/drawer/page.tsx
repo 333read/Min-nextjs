@@ -10,7 +10,6 @@ import { ProfileForm } from "@/components/drawer/draform"
 import  { useState } from "react";
 import { Item } from "@/type.d/common";
 
-
 interface DrawerProps {
     status: string;
     isOpen: boolean;
@@ -23,26 +22,38 @@ function Drawer({ status,app,loadData}: DrawerProps) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [buttonText, setButtonText] = useState(status === 'InUse' ? '已安装' : '安装'); // 用状态管理按钮文字
+    const [currentStatus, setCurrentStatus] = useState(status); // 用状态管理当前的安装状态，便于控制按钮样式
 
     const handleInstallClick = () => {
-        // if (status === 'Unused') {
-        //     setIsOpen(true); // 打开侧边栏
-        // }
+        if (status === 'Unused') {
+            setIsOpen(true); // 打开侧边栏
+        }
         
     };
 
     const getButtonStyles = () => {
-        if (status === 'InUse') {
+        if (currentStatus === 'InUse') {
             return 'border border-input rounded-md bg-gray-300 text-sm text-white shadow-sm  h-9 px-6 py-2 cursor-not-allowed '; // 在使用状态
-        } else if (status === 'Unused') {
+        } else if (currentStatus === 'Unused') {
             return 'bg-theme-color text-sm text-gray-100 shadow hover:bg-theme-color/70 h-9 px-6 py-2'; // 未使用状态
         }
         return 'bg-theme-color text-white'; // 默认样式
     };
 
-    const handleInstallSuccess = () => {
-        setButtonText("已安装"); // 安装成功后更新按钮文字
 
+    //handleInstallSuccess成功运行安装局部更新状态
+    const handleInstallSuccess = () => {
+        alert("安装成功");
+        setButtonText("已安装"); // 安装成功后更新按钮文字
+        setCurrentStatus('InUse'); // 更新状态为 "InUse"（已安装），以改变按钮样式
+        setIsOpen(false); // 关闭侧边栏
+        loadData(); // 刷新数据
+    };
+
+    //handleInstallFalse失败运行安装局部更新状态
+    const handleInstallFalse = () => {
+        alert("安装失败,请重试~");
+        setIsOpen(false); // 关闭侧边栏
     };
     
     
@@ -71,8 +82,8 @@ function Drawer({ status,app,loadData}: DrawerProps) {
                     </SheetDescription>
                     <ProfileForm 
                         app={app} 
-                        loadData={loadData} 
-                        onInstallSuccess={handleInstallSuccess}  
+                        onInstallSuccess={handleInstallSuccess}
+                        onFalse={handleInstallFalse}  
                         
                         />
                 </SheetHeader>
@@ -85,3 +96,4 @@ function Drawer({ status,app,loadData}: DrawerProps) {
 
 
 export default Drawer
+

@@ -22,11 +22,12 @@ import { useEffect, useState } from "react"
 interface ProfileFormProps {
     app: Item;  // 接收 app 数据
     onInstallSuccess: () => void; // 新增回调
+    onFalse: () => void; // 失败回调
 }
 
 
 
-export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
+export function ProfileForm({ app, onInstallSuccess,onFalse }: ProfileFormProps) {
     const [dockerCompose, setDockerCompose] = useState<string>("");  // 存储docker_compose内容
     const [cpuLimit, setCpuLimit] = useState<string>("1");  // 默认值为 1
     const [memoryLimit, setMemoryLimit] = useState<string>("0");  // 默认值为 120M
@@ -46,7 +47,6 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
         if (app.key) {
             setLoading(true); // 开始加载
             setError(""); // 清空之前的错误
-
             // 发起 GET 请求
             fetch(`http://192.168.31.214:8080/api/v1/apps/${app.key}/detail`, {
                 headers: {
@@ -66,8 +66,7 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
                 // 获取 form_fields 数组并存储
                 setFormFields(data.data.params.form_fields || []);
                 // 设置 formFields 的默认值
-                // 设置 formFields 的默认值
-            data.data.params.form_fields.forEach((field: Field, index: number) => {
+                data.data.params.form_fields.forEach((field: Field, index: number) => {
                 const fieldName = field.name || `generated-name-${field.label.replace(/\s+/g, '-').toLowerCase()}-${index}`;
                 setValue(fieldName, field.default || ""); // 设置每个字段的默认值
             });
@@ -117,21 +116,20 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
     
             const result = await response.json();
             if (response.ok) {
-                // 请求成功，显示成功消息
-                setSuccessMessage("安装成功！");
-                
-
-                onInstallSuccess(); // 成功时调用回调函数
+                onInstallSuccess(); // 成功时调用回调函数回到drawer组件
             } else {
                 // 请求失败，显示错误消息
                 setError(result.message || "请求失败，请稍后重试");
+                onFalse(); // 失败时调用回调函数回到drawer组件显示
             }
         } catch (error) {
             // 捕获网络错误
             setError("网络错误，请检查网络连接");
+            onFalse(); // 失败时调用回调函数回到drawer组件显示
         } finally {
             setLoading(false); // 请求完成，无论成功或失败都需要关闭加载状态
         }
+
     };
     
 
