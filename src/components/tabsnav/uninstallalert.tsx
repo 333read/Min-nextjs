@@ -30,10 +30,10 @@ export function AlertDialogDemo({ isOpen, onClose, app, onUninstall }: AlertDial
                 data: "",
             };
             // 发送 DELETE 请求来卸载应用
-            const response = await fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}`, {
+            const response = await fetch(`http://192.168.31.214:8080/api/v1/apps/${app.key}`, {
                 method: "DELETE",
                 headers: {
-                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj", // 如果需要 token，记得替换为实际的 token
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", // 如果需要 token，记得替换为实际的 token
                 },
                 body: JSON.stringify(requestBody), 
             }

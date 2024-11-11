@@ -21,7 +21,6 @@ import { useEffect, useState } from "react"
 
 interface ProfileFormProps {
     app: Item;  // 接收 app 数据
-    loadData: () => void;  // 接收 loadData 函数
     onInstallSuccess: () => void; // 新增回调
 }
 
@@ -49,9 +48,9 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
             setError(""); // 清空之前的错误
 
             // 发起 GET 请求
-            fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}/detail`, {
+            fetch(`http://192.168.31.214:8080/api/v1/apps/${app.key}/detail`, {
                 headers: {
-                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj`
+                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_`
                 }
             })
             .then((response) => {
@@ -79,6 +78,7 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
                 setError("请求失败，请稍后重试"); // 错误处理
                 setLoading(false);
             });
+
         }
     }, [app.key,setValue]);
 
@@ -106,11 +106,11 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
             };
     
             // 发送 POST 请求进行安装
-            const response = await fetch(`http://127.0.0.1:8080/api/v1/apps/${app.key}`, {
+            const response = await fetch(`http://192.168.31.214:8080/api/v1/apps/${app.key}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj", // 示例 token
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", // 示例 token
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -119,6 +119,8 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
             if (response.ok) {
                 // 请求成功，显示成功消息
                 setSuccessMessage("安装成功！");
+                
+
                 onInstallSuccess(); // 成功时调用回调函数
             } else {
                 // 请求失败，显示错误消息
@@ -153,11 +155,11 @@ export function ProfileForm({ app, onInstallSuccess }: ProfileFormProps) {
                         onChange: (e) => {
                             // 触发 onChange 时重新校验（即时校验）
                             form.trigger(fieldName);
-                          },
-                          onBlur: () => {
+                        },
+                        onBlur: () => {
                             // 输入框失去焦点时触发校验
                             form.trigger(fieldName);
-                          }
+                        }
                     })}
                     />
                 </FormControl>

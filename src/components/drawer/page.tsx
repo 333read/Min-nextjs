@@ -25,9 +25,10 @@ function Drawer({ status,app,loadData}: DrawerProps) {
     const [buttonText, setButtonText] = useState(status === 'InUse' ? '已安装' : '安装'); // 用状态管理按钮文字
 
     const handleInstallClick = () => {
-        if (status === 'Unused') {
-            setIsOpen(true); // 打开侧边栏
-        }
+        // if (status === 'Unused') {
+        //     setIsOpen(true); // 打开侧边栏
+        // }
+        
     };
 
     const getButtonStyles = () => {
@@ -41,6 +42,7 @@ function Drawer({ status,app,loadData}: DrawerProps) {
 
     const handleInstallSuccess = () => {
         setButtonText("已安装"); // 安装成功后更新按钮文字
+
     };
     
     

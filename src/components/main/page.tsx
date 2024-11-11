@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,34 +14,34 @@ import { motion, AnimatePresence } from "framer-motion"; // 引入 framer-motion
 
 
 const fetchAppsData = async (tab: string, className = '', currentPage: number, pageSize = 9 )=> {
-    let url = `http://127.0.0.1:8080/api/v1/apps?page=${currentPage}&page_size=${pageSize}`;
+    let url = `http://192.168.31.214:8080/api/v1/apps?page=${currentPage}&page_size=${pageSize}`;
 
     // 判断是否选择了 'all' 或 'allson'，如果是则不传递 class 参数
     if ((className === 'all' || className === 'allson') && tab === 'all') {
-        url = `http://127.0.0.1:8080/api/v1/apps?page=${currentPage}&page_size=${pageSize}`;
+        url = `http://192.168.31.214:8080/api/v1/apps?page=${currentPage}&page_size=${pageSize}`;
     }
 
     // 如果选择了 className，且 tab 是 "all"，请求带有类别的应用
     if (className && tab === 'all' && className !== 'all' && className !== 'allson') {
-        url = `http://127.0.0.1:8080/api/v1/apps?class=${className}&page=${currentPage}&page_size=${pageSize}`;
+        url = `http://192.168.31.214:8080/api/v1/apps?class=${className}&page=${currentPage}&page_size=${pageSize}`;
     }
     
     // 判断是否选择了 'installed' 或 'allson'，如果是则不传递 class 参数
     if ((className === 'installed' || className === 'allson') &&tab === 'installed') {
         // 如果 tab 是 "installed"，请求已安装的应用
-        url = `http://127.0.0.1:8080/api/v1/apps/installed?page=${currentPage}&page_size=${pageSize}`;
+        url = `http://192.168.31.214:8080/api/v1/apps/installed?page=${currentPage}&page_size=${pageSize}`;
     }
 
      // 如果选择了 className，且 tab 是 "installed"，请求带有类别的应用
     else if (className && tab === 'installed' && className !== 'installed' && className !== 'allson') {
-        url = `http://127.0.0.1:8080/api/v1/apps/installed?class=${className}&page=${currentPage}&page_size=${pageSize}`;
+        url = `http://192.168.31.214:8080/api/v1/apps/installed?class=${className}&page=${currentPage}&page_size=${pageSize}`;
     }
 
     try {
         const response = await fetch(url,
             {
                 headers: {
-                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3vMTIj1-_qieyJrqCgYaFNKnB0kpNgtZ2Vus-0ALbiLJXqbLpTpeHh_B7v-cZxbBj`
+                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_`
                 }
             }
         );
@@ -80,8 +81,13 @@ function MainPage() {
         setLoading(false);
     };
 
-    // // 初次加载数据
+    // 初次加载数据
     useEffect(() => {
+        // 设置延迟时间（比如 2 秒）
+        const timer = setTimeout(() => {
+        console.log("这个方法延迟了 2 秒后触发！");
+        // 在这里执行你需要延迟的操作
+        }, 3000);
         loadData(currentPage); // 根据 currentPage 加载数据
     }, [activeTab, selectedClass, currentPage]); 
 
