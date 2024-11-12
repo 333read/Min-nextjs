@@ -53,7 +53,7 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
     }
 
     return (
-        <Card className="w-[560px]  h-[200px] m-2">
+        <Card className="w-[560px]  h-[200px] my-3 mx-3">
             <CardContent className="flex justify-start space-x-4 mt-9">
                 {isLoading ? (
                     <Skeleton className="h-12 w-12 rounded-full" />
@@ -85,7 +85,7 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
                     {isLoading ? (
                         <Skeleton className="h-4 w-56" />
                     ) : (
-                        <p className="text-sm">{app.description || "No description available"}</p>
+                        <p className="text-sm line-clamp-3 min-h-[63px] leading-[21px]">{app.description || "No description available"}</p>
                     )}
                 </CardDescription>
             </CardContent>

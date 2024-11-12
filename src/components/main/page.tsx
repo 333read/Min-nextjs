@@ -99,8 +99,8 @@ function MainPage() {
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
         setCurrentPage(1); // 切换 Tab 时重置为第 1 页
-        setSearchQuery(''); // 清空搜索
-
+        setSearchQuery(""); // 如果切换到其他 Tab，清空搜索框
+        
     };
 
     // 搜索时触发的过滤逻辑,父组件传递给 UniSearch 的搜索函数
@@ -217,18 +217,16 @@ function MainPage() {
                             </div>
                         ) : (
                             <div className="pr-6">
-                                <UniSearch onSearch={handleSearch} />
+                                <UniSearch onSearch={handleSearch}/>
                             </div>
 
                         )}
                     </div>
                 </AnimatePresence>
 
-
                 <AnimatePresence mode="wait">
                     {/* 如果当前 Tab 是 "all" 或 "allson" 且未选择 class，显示 all 类应用列表 */}
                     {(activeTab === "all" && selectedClass !== "installed") && (
-
                         <div key="b3" className=" content-start grid gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
                             {loading ? (
                                 Array.from({ length: 9 }).map((_, index) => (
@@ -264,7 +262,7 @@ function MainPage() {
                                         transition={{ duration: 0.7 }}
                                     >
 
-                                        <Card key={app.id} className="w-[377px] h-[200px]">
+                                        <Card key={app.id} className="w-[377px] h-[200px] my-2">
                                             <CardContent className="flex justify-start space-x-4 mt-9">
                                                 <Avatar className="my-auto size-10">
                                                     <AvatarImage src={app.icon} />
@@ -272,7 +270,9 @@ function MainPage() {
                                                 </Avatar>
                                                 <CardDescription className="space-y-1 text-left">
                                                     <h1 className="text-lg font-medium text-slate-950">{app.name}</h1>
-                                                    <p className="text-sm line-clamp-3">{app.description || "No description available"}</p>
+                                                    <p className="text-sm line-clamp-3 min-h-[63px] ">{app.description || "No description available"}</p>
+
+                                                    
                                                 </CardDescription>
                                             </CardContent>
                                             <CardFooter className="flex justify-end">

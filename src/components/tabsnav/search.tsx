@@ -3,11 +3,11 @@ import { useState } from "react";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
 import { Input } from "@/components/ui/input";
 import { Button } from '@/components/ui/button'
-import { debounce } from "lodash"; 
+// import { debounce } from "lodash"; 
 
 interface UniSearchProps {
     onSearch: (query: string) => void; // 父组件传递的搜索函数
-    
+
 }
 
 const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
@@ -18,11 +18,6 @@ const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
     const regex = /^[a-zA-Z0-9\u4e00-\u9fa5']*$/;
     // 正则：只允许输入中文、英文、数字
     const chregex = /^[a-zA-Z0-9\u4e00-\u9fa5]*$/;
-
-    // 使用 lodash 的 debounce 来防止连续触发搜索
-    const debouncedSearch = debounce((query: string) => {
-        onSearch(query);
-    }, 500); // 延迟500毫秒触发搜索
 
     // 处理搜索输入变化
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,13 +35,7 @@ const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         // 只有在用户输入时才触发搜索（非中文输入时）
         if (event.key === "Enter") {
-            const value =(event.target as HTMLInputElement).value;
-            if (chregex.test(value)) {
-                setError(""); // 如果符合要求，清除错误提示
-                debouncedSearch(query);
-            } else {
-                setError("请输入中文、英文或数字");
-            }
+            handleSearch();
         }
     };
 
