@@ -113,12 +113,15 @@ export function ProfileForm({ app, onInstallSuccess,onFalse }: ProfileFormProps)
                 },
                 body: JSON.stringify(requestBody),
             });
-    
+
             const result = await response.json();
+            console.log("API Response:", result); // 调试：检查返回的数据
             if (response.ok) {
+                console.log("安装成功！");
                 onInstallSuccess(); // 成功时调用回调函数回到drawer组件
             } else {
                 // 请求失败，显示错误消息
+                console.log("安装失败！", result);
                 setError(result.message || "请求失败，请稍后重试");
                 onFalse(); // 失败时调用回调函数回到drawer组件显示
             }
@@ -186,7 +189,13 @@ export function ProfileForm({ app, onInstallSuccess,onFalse }: ProfileFormProps)
                 </FormItem>
 
                 <div className="flex justify-start space-x-3">
-                    <Button type="submit" variant="surely" className="cursor-pointer" onClick={handleRestart}>重启</Button>
+                    <Button 
+                        type="submit" 
+                        variant="surely" 
+                        className="cursor-pointer" 
+                        onClick={handleRestart} 
+                        disabled={loading} //防止用户在请求期间重复点击按钮,没有这个条件影响局部加载，会全局加载覆盖出现问题
+                        >重启</Button>
                     <SheetClose
                         className="cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2"
                     >取消</SheetClose>

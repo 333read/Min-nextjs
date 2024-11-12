@@ -17,7 +17,7 @@ interface DrawerProps {
     loadData: () => void;
 }
 
-function Drawer({ status,app,loadData}: DrawerProps) {
+function Drawer({ status,app}: DrawerProps) {
 
 
     const [isOpen, setIsOpen] = useState(false);
@@ -47,13 +47,14 @@ function Drawer({ status,app,loadData}: DrawerProps) {
         setButtonText("已安装"); // 安装成功后更新按钮文字
         setCurrentStatus('InUse'); // 更新状态为 "InUse"（已安装），以改变按钮样式
         setIsOpen(false); // 关闭侧边栏
-        loadData(); // 刷新数据
+        
     };
 
     //handleInstallFalse失败运行安装局部更新状态
     const handleInstallFalse = () => {
         alert("安装失败,请重试~");
         setIsOpen(false); // 关闭侧边栏
+       
     };
     
     
@@ -84,7 +85,6 @@ function Drawer({ status,app,loadData}: DrawerProps) {
                         app={app} 
                         onInstallSuccess={handleInstallSuccess}
                         onFalse={handleInstallFalse}  
-                        
                         />
                 </SheetHeader>
             </SheetContent>

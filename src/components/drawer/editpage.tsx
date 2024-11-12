@@ -21,7 +21,11 @@ function EditDrawer({ isOpen, onClose }: EditDrawerProps) {
                     <SheetDescription className='pt-3'>
                         {/* 你可以添加更多的描述内容 */}
                     </SheetDescription>
-                    <ProfileForm />
+                    <ProfileForm app={undefined} onInstallSuccess={function (): void {
+                        throw new Error("Function not implemented.");
+                    } } onFalse={function (): void {
+                        throw new Error("Function not implemented.");
+                    } } />
                 </SheetHeader>
             </SheetContent>
         </Sheet>

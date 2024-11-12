@@ -77,7 +77,7 @@ function MainPage() {
         const data = await fetchAppsData(activeTab, selectedClass, page, pageSize, query);
         if (activeTab === 'installed') {
             setInstalledApps(data.items); // 已安装应用的搜索结果
-        } else {
+        } else if (activeTab === 'all') {
             setApps(data.items); // 所有应用的搜索结果
         }
         setFilteredApps(data.items); // 过滤后的应用
