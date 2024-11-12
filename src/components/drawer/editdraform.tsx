@@ -1,113 +1,176 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { SheetClose } from "@/components/ui/sheet"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label" 
-import { HighConfig } from '@/components/drawer/highconfig'
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { SheetClose } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { EditHighConfig } from '@/components/drawer/edithighconfig';
+import { Item } from "@/type.d/common";
+import { useEffect, useState } from "react";
 
+interface EditProps {
+    app: Item;  // 接收 app 数据
+    onEditSuccess: () => void; // 新增回调
+    onEditFalse: () => void; // 失败回调
+}
 
+export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
+    const [dockerCompose, setDockerCompose] = useState<string>("");  // 存储docker_compose内容
+    const [cpuLimit, setCpuLimit] = useState<string>("1");  // 默认值为 1
+    const [memoryLimit, setMemoryLimit] = useState<string>("0");  // 默认值为 120M
+    const [loading, setLoading] = useState<boolean>(false);  // 加载状态
+    const [error, setError] = useState<string>("");  // 错误信息
+    const [formFields, setFormFields] = useState<any[]>([]);  // 存储 form_fields 数据
 
-export function EditForm() {
-    
     const form = useForm({
-            defaultValues: {
-                username: "",
-                ossAccessKeyId: "",
-                ossAccessKeySecret: "",
-                store: false,
-            },
-        });
+        defaultValues: {},
+    });
 
-        const onSubmit = (data: unknown) => {
-            console.log(data);
-            // 在这里处理表单提交逻辑
-        };
+    const { setValue, handleSubmit, formState: { errors } } = form;
 
-return (
-            <Form {...form}>
-                <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
-                    <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>名称：</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="阿里云oss" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                    )}
-                    rules={{
-                        required: "* 用户名不能为空", // 这里添加必填验证
-                    }}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="ossAccessKeyId"
-                        render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>OSS_ACCESS_KEY_ID：</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="<ALIBABA_CLOUD_ACCESS_KEY_ID>" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                    </FormItem>
-                    )}
-                    rules={{
-                        required: "* OssAccessKeyId不能为空", // 这里添加必填验证
-                    }}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="ossAccessKeySecret"
-                        render={({ field }) => (
-                    
-                        <FormItem>
-                        <FormLabel>OSS_ACCESS_KEY_SECRET：</FormLabel>
-                        <FormControl>
-                            <Input placeholder="<ALIBABA_CLOUD_ACCESS_KEY_SECRET>" {...field} />
-                        </FormControl>
-                        <FormMessage />
+    // 发起请求获取 form_fields 内容
+    useEffect(() => {
+        if (app.id) {
+            setLoading(true); // 开始加载
+            setError(""); // 清空之前的错误
+            fetch(`http://192.168.31.214:8080/api/v1/apps/installed/${app.id}/params`, {
+                headers: {
+                    'token': 'YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_'
+                }
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("请求失败");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data.data);
+                    setDockerCompose(data.data.docker_compose || "");
+                    setFormFields(data.data.params || []);
+                    setCpuLimit(data.data.cpus || cpuLimit);  // 确保这里更新了最新的值
+                    setMemoryLimit(data.data.memory_limit || memoryLimit);  // 同上
+                    data.data.params.forEach((field: any, index: number) => {
+                        const fieldName = field.name || `generated-name-${field.label.replace(/\s+/g, '-').toLowerCase()}-${index}`;
+                        setValue(fieldName, field.default || ""); // 设置每个字段的默认值
+                    });
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    setError("请求失败，请稍后重试");
+                    setLoading(false);
+                });
+        }
+    }, [app.id, setValue]);
+
+    const handleRestart = async () => {
+        setLoading(true);
+        setError(""); // 清除之前的错误信息
+
+        // 校验表单，确保字段不为空
+        const isValid = await form.trigger(); // 校验所有表单字段
+        if (!isValid) {
+            setError("请填完整的字段信息！");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            // 构建请求体
+            const requestBody = {
+                cpus: cpuLimit,
+                docker_compose: dockerCompose,
+                memory_limit: memoryLimit,
+                params: {}, // 根据需要填充参数
+            };
+
+            // 发送 POST 请求进行安装
+            const response = await fetch(`http://192.168.31.214:8080/api/v1/apps/installed/${app.id}/params`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", // 示例 token
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                 // 成功后，更新状态，使得页面渲染新的内容
+                onEditSuccess();
+                setCpuLimit(result.data.cpus || cpuLimit);  // 确保获取到最新的值
+                setMemoryLimit(result.data.memory_limit || memoryLimit);  // 同上
+            } else {
+                setError(result.message || "请求失败，请稍后重试");
+                onEditFalse();
+            }
+        } catch (error) {
+            setError("网络错误，请检查网络连接");
+            onEditFalse();
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Form {...form} onSubmit={handleSubmit(handleRestart)}>
+            <form className="space-y-8">
+                {formFields.map((field, index) => {
+                    const fieldName = field.name || `generated-name-${field.label.replace(/\s+/g, '-').toLowerCase()}-${index}`;
+
+                    return (
+                        <FormItem key={index}>
+                            <FormLabel>{field.label}</FormLabel>
+                            <FormControl>
+                                <Input
+                                    id={fieldName}
+                                    placeholder="请输入..."
+                                    {...form.register(fieldName, {
+                                        required: `${field.label} 不能为空`,
+                                        onChange: (e) => form.trigger(fieldName),
+                                        onBlur: () => form.trigger(fieldName),
+                                    })}
+                                />
+                            </FormControl>
+                            <FormMessage>{errors[fieldName]?.message}</FormMessage>
                         </FormItem>
-                        )}
-                        rules={{
-                            required: "* OssAccessKeySecret不能为空", // 这里添加必填验证
-                        }}
-                        />
+                    );
+                })}
 
-                        <FormItem>
-                            <div  className="flex items-center space-x-2">
-                                <Checkbox id="store" />
-                                <Label htmlFor="store">默认储存</Label>
-                            </div>
-                        </FormItem>
-
-                        <FormItem>
-                            <HighConfig />
-                        </FormItem>
-                        
-                    
-                    <div className='flex justify-start space-x-3'>
-                        <Button type='submit' variant='surely' className='cursor-pointer' onClick={form.handleSubmit(onSubmit)}>重启</Button>
-                        <SheetClose 
-                            className='cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2'
-                        >取消</SheetClose>
+                <FormItem>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="store" />
+                        <Label htmlFor="store">默认储存</Label>
                     </div>
-                </form>
-            </Form>
-        
-        
-    )
+                </FormItem>
+
+                <FormItem>
+                    <EditHighConfig 
+                        app={app}
+                        dockerCompose={dockerCompose}
+                        cpuLimit={cpuLimit}  // 传递 cpuLimit
+                        memoryLimit={memoryLimit}  // 传递 memoryLimit
+                        setDockerCompose={setDockerCompose}
+                        setCpuLimit={setCpuLimit}
+                        setMemoryLimit={setMemoryLimit}
+                    />
+                </FormItem>
+
+                <div className="flex justify-start space-x-3">
+                    <Button
+                        type="submit"
+                        variant="surely"
+                        onClick={handleRestart}
+                        disabled={loading}>重启</Button>
+                    <SheetClose
+                        className="cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2"
+                    >取消</SheetClose>
+                </div>
+            </form>
+        </Form>
+    );
 }

@@ -14,13 +14,19 @@ import EditDrawer from "@/components/drawer/editpage"
 import { Item } from "@/type.d/common"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => void }) {
+interface InStalledBtnProps {
+    app: Item;
+    loadData: () => void;
+}
+
+export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isLogDemoOpen, setIsLogDemoOpen] = useState(false)
     const [isLogHaveOpen, setIsLogHaveOpen] = useState(false)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
     const openDialog = () => setIsDialogOpen(true)
+    const openDrawer = () => {setIsDrawerOpen(true)}
     const closeDialog = () => setIsDialogOpen(false)
     const closeLog = () => setIsLogDemoOpen(false)
     const closeLogHave = () => setIsLogHaveOpen(false)
@@ -48,9 +54,9 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
         }
     }
 
-    const openDrawer = () => {
-        setIsDrawerOpen(true)
-    }
+    
+    
+
 
     return (
         <Card className="w-[560px]  h-[200px] my-3 mx-3">
@@ -115,7 +121,6 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
                             className={isDisable ? "bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500" : ""}>
                             参数
                         </Button>
-                        <EditDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
 
                         <Button variant="common" onClick={handleToggleStarted} className={isDisable ? "bg-theme-color text-white" : ""}>
                             {isDisable ? "启用" : "停止"}
@@ -137,6 +142,8 @@ export function InStalledBtn({ app,loadData }:  { app: Item, loadData: () => voi
             </CardFooter>
 
             {isLoading && <LoadingOverlay />}
+
+            <EditDrawer isOpen={isDrawerOpen} onClose={closeDrawer} app={app} />
         </Card>
     )
 }

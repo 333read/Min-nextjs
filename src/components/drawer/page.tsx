@@ -54,7 +54,6 @@ function Drawer({ status,app}: DrawerProps) {
     const handleInstallFalse = () => {
         alert("安装失败,请重试~");
         setIsOpen(false); // 关闭侧边栏
-       
     };
     
     
