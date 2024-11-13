@@ -269,7 +269,7 @@ function MainPage() {
                                                     <AvatarFallback>loading</AvatarFallback>
                                                 </Avatar>
                                                 <CardDescription className="space-y-1 text-left">
-                                                    <h1 className="text-lg font-medium text-slate-950">{app.name}</h1>
+                                                    <h1 className="text-lg font-medium text-slate-900 dark:text-white">{app.name}</h1>
                                                     <p className="text-sm line-clamp-3 min-h-[63px] ">{app.description || "No description available"}</p>
 
                                                     

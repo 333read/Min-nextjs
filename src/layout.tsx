@@ -7,11 +7,9 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
     return (
-        <>
-            <html lang="en" suppressHydrationWarning>
-                <head />
-                <body>
-                <ThemeProvider
+        
+            <>
+            <ThemeProvider
                     attribute="class"
                     defaultTheme="light"
                     enableSystem
@@ -19,8 +17,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 >
                     {children}
                 </ThemeProvider>
-                </body>
-            </html>
-        </>
+            </>
+                
+        
     )
 }

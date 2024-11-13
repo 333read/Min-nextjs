@@ -74,7 +74,7 @@ export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
                     {isLoading ? (
                         <Skeleton className="h-6 w-48" />
                     ) : (
-                        <div className="text-lg font-medium text-slate-950">
+                        <div className="text-lg font-medium text-slate-950 dark:text-white">
                             {app.name}
                             <span
                                 className={
