@@ -75,7 +75,7 @@ function Drawer({ status,app}: DrawerProps) {
                     {buttonText}
                 </div>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className='sm:overflow-y-hidden'>
                 <SheetHeader>
                     <SheetTitle className='ml-9 -mt-1.5 text-gray-700'>返回</SheetTitle>
                     <SheetDescription className='pt-3'>
