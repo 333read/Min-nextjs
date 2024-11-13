@@ -118,7 +118,10 @@ export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
                         <Button 
                             variant="common" 
                             onClick={openDrawer}  
-                            className={isDisable ? "bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500" : ""}>
+                            disabled={isDisable}  // 禁用按钮
+                            className={isDisable ? "bg-gray-500 text-white cursor-not-allowed hover:bg-gray-500" : ""}
+                            
+                            >
                             参数
                         </Button>
 

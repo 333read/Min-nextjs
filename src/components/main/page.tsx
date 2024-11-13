@@ -16,7 +16,7 @@ const fetchAppsData = async (tab: string, className = '', currentPage: number, p
     let url = '';
 
     if (tab === 'all') {
-        url = `http://192.168.31.214:8080/api/v1/apps?page=${currentPage}&page_size=${pageSize}`;
+        url = `/api/v1/apps?page=${currentPage}&page_size=${pageSize}`;
         if (query) {
             // 对于 "all" 页，添加搜索条件
             url += `&name=${query}&descript=${query}`;
@@ -25,7 +25,7 @@ const fetchAppsData = async (tab: string, className = '', currentPage: number, p
             url += `&class=${className}`;
         }
     } else if (tab === 'installed') {
-        url = `http://192.168.31.214:8080/api/v1/apps/installed?page=${currentPage}&page_size=${pageSize}`;
+        url = `/api/v1/apps/installed?page=${currentPage}&page_size=${pageSize}`;
         if (query) {
             // 对于 "installed" 页，添加搜索条件
             url += `&name=${query}&descript=${query}`;

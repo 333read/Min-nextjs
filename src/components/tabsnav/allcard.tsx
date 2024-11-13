@@ -1,4 +1,4 @@
-
+// 所有应用页面单卡片模版（可delete）
 import {
     Card,
     CardContent,

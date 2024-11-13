@@ -55,7 +55,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
         if (app.id) {
             setLoading(true); // 开始加载
             setError(""); // 清空之前的错误
-            fetch(`http://192.168.31.214:8080/api/v1/apps/installed/${app.id}/params`, {
+            fetch(`/api/v1/apps/installed/${app.id}/params`, {
                 headers: {
                     'token': 'YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_'
                 }
@@ -117,7 +117,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
             };
 
             // 发送 POST 请求进行修改
-            const response = await fetch(`http://192.168.31.214:8080/api/v1/apps/installed/${app.id}/params`, {
+            const response = await fetch(`/api/v1/apps/installed/${app.id}/params`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
