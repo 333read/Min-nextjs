@@ -11,13 +11,11 @@ import {
 import axios from "axios";
 import Codemirror from "@uiw/react-codemirror";
 import { javascript } from '@codemirror/lang-javascript';
-import { Button } from "@/components/ui/button"
 import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent, SelectLabel, SelectGroup } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
 import { Item } from "@/type.d/common";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Label } from '@/components/ui/label';
 
 interface AlertLogDemoProps {
     isLogOpen: boolean;
@@ -52,25 +50,23 @@ export function AlertLogDemo({ isOpen, onClose }: AlertLogDemoProps) {
 
 export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
 
-    const { t } = useTranslation();
-
     const [error, setError] = useState<string>("");
     const [logInfo, setLogInfo] = useState('');
     const [logSearch, setLogSearch] = useState({
-        tail: 500
+        tail: 10000,
+        mode: 'all'
     });
 
     const codemirrorRef = useRef(null);
 
     // 时间范围选择项
     const timeOptions = [
-        { label: t('container.all'), value: 'all' }, // 获取所有日志
-        { label: t('container.lastDay'), value: (Date.now() - 24 * 60 * 60 * 1000).toString() }, // 昨天
-        { label: t('container.last4Hour'), value: (Date.now() - 4 * 60 * 60 * 1000).toString() }, // 最近4小时
-        { label: t('container.lastHour'), value: (Date.now() - 1 * 60 * 60 * 1000).toString() }, // 最近1小时
-        { label: t('container.last10Minute'), value: (Date.now() - 10 * 60 * 1000).toString() }, // 最近10分钟
+        { label: 'All Log', value: 'all' }, // 获取所有日志
+        { label: 'Last day', value: (Math.round((Date.now() - 24 * 60 * 60 * 1000)/1000)).toString() }, // 昨天
+        { label: 'Last 4 hours', value: (Math.round((Date.now() - 4 * 60 * 60 * 1000)/1000)).toString() }, // 最近4小时
+        { label: 'Last 1 hour', value: (Math.round((Date.now() - 1 * 60 * 60 * 1000)/1000)).toString() }, // 最近1小时
+        { label: 'Last 10 minutes', value: (Math.round((Date.now() - 10 * 60 * 1000)/1000)).toString() }, // 最近10分钟
     ];
-
 
     useEffect(() => {
         if (!isOpen) return;
@@ -82,21 +78,27 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
         };
     }, [isOpen, logSearch]); // 每次打开和日志搜索条件更新时重新请求数据
 
+     // 获取当前 mode 对应的 label
+     const selectedLabel = timeOptions.find(item => item.value === logSearch.mode)?.label ||'All Log';
+
     // 使用 axios来请求日志
     const fetchLogs = async () => {
         try {
+            const params: any = {
+                tail: logSearch.tail,
+            };
+
+            // 如果选中的时间范围不是 "all"，则传递 since 参数
+            if (logSearch.mode !== 'all') {
+                params.since = logSearch.mode;
+            }
             const response = await axios.get(`/api/v1/apps/installed/${app.id}/logs`, {
-                params: {
-                    tail: logSearch.tail,
-                    since: logSearch.mode,
-                },
+                params,
                 headers: {
                     token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_`
                 }
             });
-
             setLogInfo(response.data.data); // 设置返回的日志数据
-
             console.log("日志 data:", response.data);
 
             //  设置Codemirror 的引用，滚动到最后
@@ -114,15 +116,6 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
         }
     };
 
-    // 搜索日志的逻辑
-    const searchLogs = () => {
-        if (Number(logSearch.tail) < 0) {
-            alert('请输入正确的日志条数');
-            return;
-        }
-
-        fetchLogs(); // 执行日志请求
-    };
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent >
@@ -132,32 +125,44 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
                 <SheetDescription className='pt-3'>
                 </SheetDescription>
                 <div className='flex items-center justify-between'>
-                    <Select value={logSearch.mode} onValueChange={(value) => setLogSearch(prev => ({ ...prev, mode: value }))}>
-                        <SelectTrigger className="w-52">
-                        <SelectValue>{t('container.fetch')}</SelectValue>
-                        </SelectTrigger>
-                        <SelectContent >
-                            {timeOptions.map((item) => (
-                                <SelectItem key={item.value} value={item.value.toString()}>
-                                    {item.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <div>
+                        <Label className='ml-4'>Time Range</Label>
+                        <Select 
+                            value={logSearch.mode} 
+                            onValueChange={(value) => {
+                                console.log('value', value);
+                                setLogSearch(prev => ({ ...prev, mode: value}));
+                        }}
+                        >
+                            <SelectTrigger className="w-52">
+                                <SelectValue>{selectedLabel}</SelectValue>
+                            </SelectTrigger>
+                            <SelectContent >
+                                    {timeOptions.map((item) => (
+                                            <SelectItem key={item.value} value={item.value}>
+                                                {item.label}
+                                            </SelectItem>
+                                        ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                    {/* 条数选择 */}
-                    <Select value={logSearch.tail.toString()} onValueChange={(value) => setLogSearch(prev => ({ ...prev, tail: Number(value) }))}>
-                        <SelectTrigger className="w-52">
-                            <span>{t('container.lines')}</span>
-                        </SelectTrigger>
-                        <SelectContent>
-                            {[0, 500, 1000, 5000, 10000].map((value) => (
-                                <SelectItem key={value} value={value.toString()}>
-                                    {value === 0 ? t('commons.table.all') : value}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <div>
+                        {/* 条数选择 */}
+                        <Label className='ml-4'>Lines</Label>
+                        <Select value={logSearch.tail.toString()} onValueChange={(value) => setLogSearch(prev => ({ ...prev, tail: Number(value) }))}>
+                            <SelectTrigger className="w-52">
+                                <span>{logSearch.tail === 10000 ? 'All' : logSearch.tail}</span>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {[5, 10, 20, 500, 1000, 5000, 10000].map((value) => (
+                                    <SelectItem key={value} value={value.toString()}>
+                                        {value === 0 ? 'All' : value}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
                 <div className="py-4">

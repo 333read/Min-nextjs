@@ -113,7 +113,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
                 cpus: cpuLimit,
                 docker_compose: dockerCompose,
                 memory_limit: memoryLimit,
-                // params: params,
+                params: params,
             };
 
             // 发送 POST 请求进行修改
