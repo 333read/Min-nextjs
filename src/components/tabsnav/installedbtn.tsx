@@ -113,7 +113,7 @@ export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
                             日志
                         </Button>
                         {isLogDemoOpen && <AlertLogDemo isOpen={isLogDemoOpen} onClose={closeLog} isLogOpen={false} />}
-                        {isLogHaveOpen && <AlertLogHave isOpen={isLogHaveOpen} onClose={closeLogHave} isLogOpen={false} />}
+                        {isLogHaveOpen && <AlertLogHave isOpen={isLogHaveOpen} onClose={closeLogHave} isLogOpen={false} app={app} />}
 
                         <Button 
                             variant="common" 

@@ -121,7 +121,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", // 示例 token
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", 
                 },
                 body: JSON.stringify(requestBody),
             });

@@ -5,7 +5,7 @@ import {
     CardDescription,
     CardFooter,
 } from "@/components/ui/card"
-import  Drawer  from "@/components/drawer/page"
+// import  Drawer  from "@/components/drawer/page"
 import {
     Avatar,
     AvatarFallback,
@@ -30,7 +30,8 @@ export function CardWithAll() {
                 </CardDescription>
             </CardContent>
             <CardFooter className="flex justify-end">
-                <Drawer status={""} />
+                ...
+                {/* <Drawer status={""} /> */}
             </CardFooter>
         </Card>
     )
