@@ -69,7 +69,7 @@ export function ProfileForm({
             // 发起 GET 请求
             fetch(`/api/v1/apps/${app.key}/detail`, {
                 headers: {
-                    token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_`,
+                    token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq`,
                 },
             })
                 .then((response) => {
@@ -136,7 +136,7 @@ export function ProfileForm({
                 headers: {
                     "Content-Type": "application/json",
                     token:
-                        "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", // 示例 token
+                        "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq", // 示例 token
                 },
                 body: JSON.stringify(requestBody),
             });

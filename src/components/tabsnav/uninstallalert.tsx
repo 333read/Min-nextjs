@@ -33,7 +33,7 @@ export function AlertDialogDemo({ isOpen, onClose, app, onUninstall }: AlertDial
             const response = await fetch(`http://192.168.31.214:8080/api/v1/apps/${app.key}`, {
                 method: "DELETE",
                 headers: {
-                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", // 如果需要 token，记得替换为实际的 token
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq", 
                 },
                 body: JSON.stringify(requestBody), 
             }

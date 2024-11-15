@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     AlertDialog,
@@ -11,7 +12,7 @@ import {
 import axios from "axios";
 import Codemirror from "@uiw/react-codemirror";
 import { javascript } from '@codemirror/lang-javascript';
-import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent, SelectLabel, SelectGroup } from "@/components/ui/select";
+import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/select";
 import { useState, useEffect, useRef } from "react";
 import { Item } from "@/type.d/common";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -49,23 +50,21 @@ export function AlertLogDemo({ isOpen, onClose }: AlertLogDemoProps) {
 }
 
 export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
-
-    const [error, setError] = useState<string>("");
     const [logInfo, setLogInfo] = useState('');
+    const codemirrorRef = useRef(null);  //创建对 Codemirror 编辑器的引用，便于侧边滚动到最后
     const [logSearch, setLogSearch] = useState({
+        modeIndex: 0, // 当前选中的时间范围索引
         tail: 10000,
-        mode: 'all'
     });
 
-    const codemirrorRef = useRef(null);
 
     // 时间范围选择项
     const timeOptions = [
         { label: 'All Log', value: 'all' }, // 获取所有日志
-        { label: 'Last day', value: (Math.round((Date.now() - 24 * 60 * 60 * 1000)/1000)).toString() }, // 昨天
-        { label: 'Last 4 hours', value: (Math.round((Date.now() - 4 * 60 * 60 * 1000)/1000)).toString() }, // 最近4小时
-        { label: 'Last 1 hour', value: (Math.round((Date.now() - 1 * 60 * 60 * 1000)/1000)).toString() }, // 最近1小时
-        { label: 'Last 10 minutes', value: (Math.round((Date.now() - 10 * 60 * 1000)/1000)).toString() }, // 最近10分钟
+        { label: 'Last day', value: (Math.round((Date.now() - 24 * 60 * 60 * 1000) / 1000)) }, // 昨天
+        { label: 'Last 4 hours', value: (Math.round((Date.now() - 4 * 60 * 60 * 1000) / 1000)) }, // 最近4小时
+        { label: 'Last 1 hour', value: (Math.round((Date.now() - 1 * 60 * 60 * 1000) / 1000)) }, // 最近1小时
+        { label: 'Last 10 minutes', value: (Math.round((Date.now() - 10 * 60 * 1000) / 1000)) }, // 最近10分钟
     ];
 
     useEffect(() => {
@@ -76,26 +75,22 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
         return () => {
             // 关闭日志时的清理工作（没有 WebSocket连接，所以不需要关闭）
         };
-    }, [isOpen, logSearch]); // 每次打开和日志搜索条件更新时重新请求数据
+    }, [isOpen, logSearch]); // isOpen：true 或 logSearch 更新时，会调用 fetchLogs 函数请求拉取日志
 
-     // 获取当前 mode 对应的 label
-     const selectedLabel = timeOptions.find(item => item.value === logSearch.mode)?.label ||'All Log';
 
     // 使用 axios来请求日志
     const fetchLogs = async () => {
         try {
-            const params: any = {
+            // 获取当前选中的时间戳
+            const selectedOption = timeOptions[logSearch.modeIndex];
+            const params = {
                 tail: logSearch.tail,
+                since: selectedOption.value !== 'all' ? selectedOption.value : undefined, // 只传递选中的时间戳
             };
-
-            // 如果选中的时间范围不是 "all"，则传递 since 参数
-            if (logSearch.mode !== 'all') {
-                params.since = logSearch.mode;
-            }
             const response = await axios.get(`/api/v1/apps/installed/${app.id}/logs`, {
                 params,
                 headers: {
-                    token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_`
+                    token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq`
                 }
             });
             setLogInfo(response.data.data); // 设置返回的日志数据
@@ -111,9 +106,14 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
             }
         } catch (error) {
             console.log("Failed to fetch logs:", error);
-            setError('container.fetchLogError'); // 错误提示
+            alert('container.fetchLogError'); // 错误提示
 
         }
+    };
+
+    // 更新选中的时间段的值，使用下标更新
+    const handleModeChange = (index: number) => {
+        setLogSearch(prev => ({ ...prev, modeIndex: index }));
     };
 
     return (
@@ -127,22 +127,19 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
                 <div className='flex items-center justify-between'>
                     <div>
                         <Label className='ml-4'>Time Range</Label>
-                        <Select 
-                            value={logSearch.mode} 
-                            onValueChange={(value) => {
-                                console.log('value', value);
-                                setLogSearch(prev => ({ ...prev, mode: value}));
-                        }}
-                        >
+                        <Select value={logSearch.modeIndex.toString()} onValueChange={(value) => handleModeChange(Number(value))}>
                             <SelectTrigger className="w-52">
-                                <SelectValue>{selectedLabel}</SelectValue>
+                                <SelectValue>
+                                    {/* 通过下标渲染选中的时间范围的label */}
+                                    {timeOptions[logSearch.modeIndex].label}
+                                </SelectValue>
                             </SelectTrigger>
-                            <SelectContent >
-                                    {timeOptions.map((item) => (
-                                            <SelectItem key={item.value} value={item.value}>
-                                                {item.label}
-                                            </SelectItem>
-                                        ))}
+                            <SelectContent>
+                                {timeOptions.map((item, index) => (
+                                    <SelectItem key={index} value={index.toString()}>
+                                        {item.label}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -150,7 +147,10 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
                     <div>
                         {/* 条数选择 */}
                         <Label className='ml-4'>Lines</Label>
-                        <Select value={logSearch.tail.toString()} onValueChange={(value) => setLogSearch(prev => ({ ...prev, tail: Number(value) }))}>
+                        <Select 
+                            value={logSearch.tail.toString()} 
+                            onValueChange={(value) => setLogSearch(prev => ({ ...prev, tail: Number(value) }))}
+                        >
                             <SelectTrigger className="w-52">
                                 <span>{logSearch.tail === 10000 ? 'All' : logSearch.tail}</span>
                             </SelectTrigger>

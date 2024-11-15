@@ -57,7 +57,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
             setError(""); // 清空之前的错误
             fetch(`/api/v1/apps/installed/${app.id}/params`, {
                 headers: {
-                    'token': 'YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_'
+                    'token': 'YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq'
                 }
             })
                 .then((response) => {
@@ -121,7 +121,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3s2uV4oLAEbwcuHiev6xcxqnB0kpNgtZ2Vus-0ALbiLLDFuhkO6T7Yay-mOYRrcm_", 
+                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq", 
                 },
                 body: JSON.stringify(requestBody),
             });
