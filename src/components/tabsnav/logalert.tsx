@@ -118,7 +118,7 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent >
+            <SheetContent className="overflow-scroll">
                 <SheetHeader>
                     <SheetTitle className='ml-9 -mt-1.5 text-gray-700'>Log</SheetTitle>
                 </SheetHeader>
@@ -126,9 +126,9 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
                 </SheetDescription>
                 <div className='flex items-center justify-between'>
                     <div>
-                        <Label className='ml-4'>Time Range</Label>
+                        <Label className='ml-1'>Time Range</Label>
                         <Select value={logSearch.modeIndex.toString()} onValueChange={(value) => handleModeChange(Number(value))}>
-                            <SelectTrigger className="w-52">
+                            <SelectTrigger className="lg:w-52 md:w-52 w-28 ">
                                 <SelectValue>
                                     {/* 通过下标渲染选中的时间范围的label */}
                                     {timeOptions[logSearch.modeIndex].label}
@@ -146,12 +146,12 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
 
                     <div>
                         {/* 条数选择 */}
-                        <Label className='ml-4'>Lines</Label>
+                        <Label className='ml-1'>Lines</Label>
                         <Select 
                             value={logSearch.tail.toString()} 
                             onValueChange={(value) => setLogSearch(prev => ({ ...prev, tail: Number(value) }))}
                         >
-                            <SelectTrigger className="w-52">
+                            <SelectTrigger className="lg:w-52 md:w-52 w-28">
                                 <span>{logSearch.tail === 10000 ? 'All' : logSearch.tail}</span>
                             </SelectTrigger>
                             <SelectContent>
@@ -172,10 +172,10 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
                         ref={codemirrorRef}
                         value={logInfo}
                         editable={false}
-                        height="1000px"
+                        height="950px"
                         theme="light"
                         autoFocus={true} // 加载自动聚焦
-                        extensions={[javascript()]}
+                        extensions={[javascript()]}                       
                     />
                 </div>
             </SheetContent>

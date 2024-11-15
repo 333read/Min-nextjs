@@ -59,7 +59,7 @@ export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
 
 
     return (
-        <Card className="w-[560px]  h-[200px] my-3 mx-3">
+        <Card className="lg:w-[560px] md:w-[660px] w-[360px] h-[200px] lg:mx-3 my-3  ">
             <CardContent className="flex justify-start space-x-4 mt-9">
                 {isLoading ? (
                     <Skeleton className="h-12 w-12 rounded-full" />

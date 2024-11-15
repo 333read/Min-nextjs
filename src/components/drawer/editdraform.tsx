@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { EditHighConfig } from '@/components/drawer/edithighconfig';
-import { Item } from "@/type.d/common";
+import { Item} from "@/type.d/common";
 import { useEffect, useState } from "react";
 
 interface EditProps {

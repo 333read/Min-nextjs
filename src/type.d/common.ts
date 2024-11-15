@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Root<T> {
     code: number
     msg: string
@@ -23,3 +24,15 @@ export interface Item {
     sort: number
     status: string
 }
+
+export interface Params {
+    default: string
+    label: string
+    env_key: string
+    key: string
+    value: string
+    values: any
+    type: string
+    rule: string
+    required: boolean
+  }

@@ -119,7 +119,7 @@ function MainPage() {
     return (
         <>
             <AnimatePresence mode="wait">
-                <div key="b1" className="flex -space-x-1">
+                <div key="b1" className="flex lg:-space-x-1 ">
                     {/* 按钮部分：如果正在加载，显示 Skeleton 占位符 */}
                     {loading ? (
                         <div key="b11" className="flex -space-x-1">
@@ -155,10 +155,10 @@ function MainPage() {
                 </div>
             </AnimatePresence>
 
-            <div className="p-2 border-2 border-gray-300">
+            <div className="lg:p-2 sm:p-0 lg:border-2 lg:border-gray-300 lg:w-full md:w-full sm:w-full ">
 
                 <AnimatePresence mode="wait">
-                    <div key="b2" className="flex justify-between items-center mb-3">
+                    <div key="b2" className="lg:flex md:flex lg:justify-between md:justify-between sm:justify-between lg:items-center lg:mb-3 ">
                         {loading ? (
                             <div key="b22" className="flex w-306 whitespace-nowrap rounded-md">
                                 <Skeleton className="h-8 w-20 mb-3" />
@@ -166,7 +166,7 @@ function MainPage() {
                                 <Skeleton className="h-8 w-20 mb-3" />
                             </div>
                         ) : (
-                            <ScrollArea className="w-[606px] overflow-x-auto">
+                            <ScrollArea className="lg:w-[606px] md:w-[330px] whitespace-nowrap overflow-x-auto">
                                 {/* 使用 Button 切换*/}
                                 <div className="flex -space-x-2 mb-3">
                                     <motion.div
@@ -227,7 +227,7 @@ function MainPage() {
                 <AnimatePresence mode="wait">
                     {/* 如果当前 Tab 是 "all" 或 "allson" 且未选择 class，显示 all 类应用列表 */}
                     {(activeTab === "all" && selectedClass !== "installed") && (
-                        <div key="b3" className=" content-start grid gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
+                        <div key="b3" className="lg:content-start  md:content-between sm:content-center grid gap-1 m-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                             {loading ? (
                                 Array.from({ length: 9 }).map((_, index) => (
                                     <motion.div
@@ -262,7 +262,7 @@ function MainPage() {
                                         transition={{ duration: 0.7 }}
                                     >
 
-                                        <Card key={app.id} className="w-[377px] h-[200px] my-2">
+                                        <Card key={app.id} className="lg:w-[377px] lg:h-[200px] md:w-[330px] w-[360px] my-2">
                                             <CardContent className="flex justify-start space-x-4 mt-9">
                                                 <Avatar className="my-auto size-10">
                                                     <AvatarImage src={app.icon} />
@@ -297,7 +297,7 @@ function MainPage() {
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.5 }}
                         >
-                            <div className=" content-start grid grid-cols-2 gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
+                            <div className=" content-start grid gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
                                 {loading ? (
                                     <div></div>
                                 ) : (

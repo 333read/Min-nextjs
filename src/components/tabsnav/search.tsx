@@ -50,7 +50,7 @@ const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
 
     return (
         <div>
-            <div className="relative flex items-center lg:w-[250px] sm:w-[150px]">
+            <div className="relative flex items-center lg:w-[300px] sm:w-[230px]">
 
             <Input
                 type="text"
@@ -58,14 +58,14 @@ const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
                 value={query}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown} // 键盘按下时触发（处理回车提交）
-                className="input-class lg:w-[300px] sm:w-[150px]"
+                className="input-class lg:w-[300px] sm:w-[230px]"
             />
             
             <Button
                 variant="common"
                 onClick={handleSearch}
                 disabled={!!error }
-                className="absolute right-0 top-0.5  p-2"
+                className="absolute right-0 top-0.5  p-2 md:p-2"
             >
                 <MagnifyingGlassIcon className="size-10 shrink-0" />
             </Button>
