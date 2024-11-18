@@ -208,7 +208,7 @@ function MainPage() {
                                         </Button>
                                     </motion.div>
                                 </div>
-                                <ScrollBar orientation="horizontal" />
+                                <ScrollBar orientation="horizontal" className="bg-transparent"  />
                             </ScrollArea>
                         )}
                         {loading ? (

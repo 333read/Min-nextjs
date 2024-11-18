@@ -5,12 +5,18 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [react()],
   server: {
+    hmr:false,
     proxy: {
       '/api': {
         target: 'http://192.168.31.214:8080',
         changeOrigin: true,
       }
     },
+
+    headers: {
+      'Access-Control-Allow-Origin': '*',  // 允许跨域连接
+    },
+    
   },
   resolve: {
     alias: {

@@ -79,8 +79,8 @@ export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
                             <span
                                 className={
                                     isDisable
-                                        ? "ml-6 border-2 rounded-full border-red-700 py-1 px-2 text-lg text-red-700"
-                                        : "ml-6 border-2 rounded-full border-theme-color py-1 px-2 text-lg text-theme-color"
+                                        ? "ml-6  border-2 rounded-full border-red-700 py-1 px-2 text-sm text-red-700"
+                                        : "ml-6  border-2 rounded-full border-theme-color py-1 px-2 text-sm text-theme-color"
                                 }
                             >
                                 {isDisable ? "已停止" : "已运行"}
@@ -139,7 +139,7 @@ export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
                             onUninstall={handleUninstall} 
                             />
 
-                        <Button variant="common">重启</Button>
+                        {/* <Button variant="common">重启</Button> */}
                     </>
                 )}
             </CardFooter>
