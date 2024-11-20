@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Root<T> {
     code: number
     msg: string
@@ -25,14 +24,23 @@ export interface Item {
     status: string
 }
 
-export interface Params {
+export interface form_fields<T> {
+    label: string
+    env_key: string
+    values: T
+    type: string
+    rule: string
+    required: boolean
+}
+
+export interface Params<T> {
     default: string
     label: string
     env_key: string
     key: string
     value: string
-    values: any
+    values: T
     type: string
     rule: string
     required: boolean
-  }
+}

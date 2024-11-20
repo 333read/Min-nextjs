@@ -17,6 +17,7 @@ import { useState, useEffect, useRef } from "react";
 import { Item } from "@/type.d/common";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Label } from '@/components/ui/label';
+import * as http from "@/api/modules/fouceinter";
 
 interface AlertLogDemoProps {
     isLogOpen: boolean;
@@ -71,29 +72,28 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
         if (!isOpen) return;
 
         fetchLogs(); // 当打开日志抽屉时，拉取日志
-
         return () => {
             // 关闭日志时的清理工作（没有 WebSocket连接，所以不需要关闭）
         };
     }, [isOpen, logSearch]); // isOpen：true 或 logSearch 更新时，会调用 fetchLogs 函数请求拉取日志
-
 
     // 使用 axios来请求日志
     const fetchLogs = async () => {
         try {
             // 获取当前选中的时间戳
             const selectedOption = timeOptions[logSearch.modeIndex];
-            const params = {
+            const logparams = {
                 tail: logSearch.tail,
                 since: selectedOption.value !== 'all' ? selectedOption.value : undefined, // 只传递选中的时间戳
             };
-            const response = await axios.get(`/api/v1/apps/installed/${app.id}/logs`, {
-                params,
-                headers: {
-                    token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq`
-                }
-            });
-            setLogInfo(response.data.data); // 设置返回的日志数据
+            // const response = await axios.get(`/api/v1/apps/installed/${app.id}/logs`, {
+            //     params,
+            //     headers: {
+            //         token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq`
+            //     }
+            // });
+            const response = await http.getLogs(app.id, logparams)
+            setLogInfo(response.data ||''); // 设置返回的日志数据
             console.log("日志 data:", response.data);
 
             //  设置Codemirror 的引用，滚动到最后

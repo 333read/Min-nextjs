@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label";
 import { HighConfig } from "@/components/drawer/highconfig";
 import { Item } from "@/type.d/common";
 import { useEffect, useState } from "react";
+import * as http from "@/api/modules/fouceinter";
+import { useTokenStore } from "@/store/useTokenStore";
 
 interface ProfileFormProps {
     app: Item; // 接收 app 数据
@@ -68,25 +70,18 @@ export function ProfileForm({
             setLoading(true); // 开始加载
             setError(""); // 清空之前的错误
             // 发起 GET 请求
-            fetch(`/api/v1/apps/${app.key}/detail`, {
-                headers: {
-                    token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq`,
-                },
-            })
+            http.getDetail(app.key)
                 .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("请求失败");
-                    }
-                    return response.json();
+                    return response;
                 })
                 .then((data) => {
                     console.log("API Response:", data); // 调试：检查返回的数据
-                    setDockerCompose(data.data.docker_compose || "");
+                    setDockerCompose(data.data?.docker_compose || "");
 
                     // 获取 form_fields 数组并存储
-                    setFormFields(data.data.params.form_fields || []);
+                    setFormFields(data.data?.params.form_fields || []);
                     // 设置 formFields 的默认值
-                    data.data.params.form_fields.forEach(
+                    data.data?.params.form_fields.forEach(
                         (field: Field) => {
                             const fieldName = field.env_key;
                             setValue(fieldName, field.default || ""); // 设置每个字段的默认值
@@ -130,27 +125,16 @@ export function ProfileForm({
                 params: params, // 可根据需要填充参数
             };
 
-
             // 发送 POST 请求进行安装
-            const response = await fetch(`/api/v1/apps/${app.key}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    token:
-                        "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq", // 示例 token
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            const result = await response.json();
-            console.log("API Response:", result); // 调试：检查返回的数据
-            if (response.ok) {
+            const response = await http.postInstall(app.key, requestBody);
+            console.log("API Response:", response); // 调试：检查返回的数据
+            if (response.code == 200) {
                 console.log("安装成功！");
                 onInstallSuccess(); // 成功时调用回调函数回到drawer组件
             } else {
                 // 请求失败，显示错误消息
-                console.log("安装失败！", result);
-                setError(result.message || "请求失败，请稍后重试");
+                console.log("安装失败！", response);
+                setError(response.message || "请求失败，请稍后重试");
                 onFalse(); // 失败时调用回调函数回到drawer组件显示
             }
         } catch (error) {

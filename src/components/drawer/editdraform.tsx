@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { EditHighConfig } from '@/components/drawer/edithighconfig';
 import { Item} from "@/type.d/common";
 import { useEffect, useState } from "react";
+import * as http from "@/api/modules/fouceinter"
 
 interface EditProps {
     app: Item;  // 接收 app 数据
@@ -56,24 +57,20 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
         if (app.id) {
             setLoading(true); // 开始加载
             setError(""); // 清空之前的错误
-            fetch(`/api/v1/apps/installed/${app.id}/params`, {
-                headers: {
-                    'token': 'YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq'
-                }
-            })
+            http.getInsParams(app.id)
                 .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("请求失败");
-                    }
-                    return response.json();
+                    // if (!response.state===200) {
+                    //     throw new Error("请求失败");
+                    // }
+                    return response;
                 })
                 .then((data) => {
                     // console.log(data.data);
-                    setDockerCompose(data.data.docker_compose || "");
-                    setFormFields(data.data.params || []);
-                    setCpuLimit(data.data.cpus || cpuLimit);  // 确保这里更新了最新的值
-                    setMemoryLimit(data.data.memory_limit || memoryLimit);  // 同上
-                    data.data.params.forEach(
+                    setDockerCompose(data.data?.docker_compose || "");
+                    setFormFields(data.data?.params || []);
+                    setCpuLimit(data.data?.cpus || cpuLimit);  // 确保这里更新了最新的值
+                    setMemoryLimit(data.data?.memory_limit || memoryLimit);  // 同上
+                    data.data?.params.forEach(
                         (field: Field) => {
                             const fieldName = field.env_key;
                             setValue(fieldName, field.value || field.default ||""); // 设置每个字段的默认值
@@ -117,34 +114,26 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
                 params: params,
             };
 
-            // 发送 POST 请求进行修改
-            const response = await fetch(`/api/v1/apps/installed/${app.id}/params`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq", 
-                },
-                body: JSON.stringify(requestBody),
-            });
+            const response = await http.putInsParams(app.id, requestBody)
 
-            const result = await response.json();
+            const result = await response;
             console.log("请展出",result);
-            if (response.ok) {
+            if (response) {
                 // 成功后，更新状态，使得页面渲染新的内容
                 console.log("真棒！修改成功");
                 onEditSuccess();
-                setCpuLimit(result.data.cpus || cpuLimit);  // 确保获取到最新的值
-                setMemoryLimit(result.data.memory_limit || memoryLimit);  // 同上
+                setCpuLimit(result.data?.cpus || cpuLimit);  // 确保获取到最新的值
+                setMemoryLimit(result.data?.memory_limit || memoryLimit);  // 同上
 
                 // 更新动态字段
-                setFormFields(result.data.params || []);
-                result.data.params.forEach((field: Field) => {
+                setFormFields(result.data?.params || []);
+                result.data?.params.forEach((field: Field) => {
                     const fieldName = field.env_key;
                     setValue(fieldName, field.value || ""); // 设置每个字段的默认值
                 });
             } else {
                 console.error("API 请求失败:", result);
-                setError(result.message || "请求失败，请稍后重试");
+                // setError(result.message || "请求失败，请稍后重试");
                 
             }
         } catch (error) {

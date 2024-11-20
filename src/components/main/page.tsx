@@ -11,46 +11,58 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Item } from "@/type.d/common";
 import { motion, AnimatePresence } from "framer-motion"; // 引入 framer-motion
+import * as http from '@/api/modules/fouceinter'
 
 const fetchAppsData = async (tab: string, className = '', currentPage: number, pageSize = 9, query: string = '') => {
-    let url = '';
 
+    const p = {
+        page: 1,
+        page_size: 9,
+        name: '',
+        descript: '',
+        class: ''
+    }
     if (tab === 'all') {
-        url = `/api/v1/apps?page=${currentPage}&page_size=${pageSize}`;
-        if (query) {
-            // 对于 "all" 页，添加搜索条件
-            url += `&name=${query}&descript=${query}`;
-        }
+
+        p.page = currentPage;
+        p.page_size = pageSize;
+        p.name = query;
+        p.descript = query;
+
         if (className && className !== 'all' && className !== 'allson') {
-            url += `&class=${className}`;
+            p.class = className;
         }
     } else if (tab === 'installed') {
-        url = `/api/v1/apps/installed?page=${currentPage}&page_size=${pageSize}`;
-        if (query) {
-            // 对于 "installed" 页，添加搜索条件
-            url += `&name=${query}&descript=${query}`;
-        }
+        p.page = currentPage;
+        p.page_size = pageSize;
+        p.name = query;
+        p.descript = query;
+
         if (className && className !== 'installed' && className !== 'allson') {
-            url += `&class=${className}`;
+            p.class = className;
         }
     }
 
     try {
-        const response = await fetch(url,
-            {
-                headers: {
-                    'token': `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq`
-                }
+        let response;
+        if (tab === 'all') {
+            response = await http.getAppList(p)
+        } else if (tab === 'installed') {
+            response = await http.getInstalledAppList(p)
+        }
+
+        if (response?.code === 200) {
+            if (response.data) {
+
+                return {
+                    items: response.data.items, // 返回应用数据
+                    total: response.data.total, // 返回数据总数
+                };
+
             }
-        );
-        const data = await response.json();
-        if (data.code === 200) {
-            return {
-                items: data.data.items, // 返回应用数据
-                total: data.data.total, // 返回数据总数
-            };
+
         } else {
-            throw new Error(data.msg);
+            throw new Error(response?.msg);
         }
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -76,12 +88,12 @@ function MainPage() {
         setLoading(true);
         const data = await fetchAppsData(activeTab, selectedClass, page, pageSize, query);
         if (activeTab === 'installed') {
-            setInstalledApps(data.items); // 已安装应用的搜索结果
+            setInstalledApps(data?.items || []); // 已安装应用的搜索结果
         } else if (activeTab === 'all') {
-            setApps(data.items); // 所有应用的搜索结果
+            setApps(data?.items || []); // 所有应用的搜索结果
         }
-        setFilteredApps(data.items); // 过滤后的应用
-        setTotalItems(data.total); // 设置接口返回的总数
+        setFilteredApps(data?.items || []); // 过滤后的应用
+        setTotalItems(data?.total || 0); // 设置接口返回的总数
         setLoading(false);
     };
 
@@ -100,7 +112,7 @@ function MainPage() {
         setActiveTab(tab);
         setCurrentPage(1); // 切换 Tab 时重置为第 1 页
         setSearchQuery(""); // 如果切换到其他 Tab，清空搜索框
-        
+
     };
 
     // 搜索时触发的过滤逻辑,父组件传递给 UniSearch 的搜索函数
@@ -208,7 +220,7 @@ function MainPage() {
                                         </Button>
                                     </motion.div>
                                 </div>
-                                <ScrollBar orientation="horizontal" className="bg-transparent"  />
+                                <ScrollBar orientation="horizontal" className="bg-transparent" />
                             </ScrollArea>
                         )}
                         {loading ? (
@@ -217,7 +229,7 @@ function MainPage() {
                             </div>
                         ) : (
                             <div className="pr-6">
-                                <UniSearch onSearch={handleSearch}/>
+                                <UniSearch onSearch={handleSearch} />
                             </div>
 
                         )}
@@ -272,7 +284,7 @@ function MainPage() {
                                                     <h1 className="text-lg font-medium text-slate-900 dark:text-white">{app.name}</h1>
                                                     <p className="text-sm line-clamp-3 min-h-[63px] ">{app.description || "No description available"}</p>
 
-                                                    
+
                                                 </CardDescription>
                                             </CardContent>
                                             <CardFooter className="flex justify-end">
@@ -289,7 +301,7 @@ function MainPage() {
 
                     {/* 如果 Tab 是 "installed"，只显示已安装应用 */}
                     {activeTab === "installed" && (
-                        
+
                         <motion.div
                             key="eoading"
                             initial={{ opacity: 0 }}

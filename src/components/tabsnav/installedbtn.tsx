@@ -54,10 +54,6 @@ export function InStalledBtn({ app, loadData }: InStalledBtnProps ) {
         }
     }
 
-    
-    
-
-
     return (
         <Card className="lg:w-[560px] md:w-[660px] w-[360px] h-[200px] lg:mx-3 my-3  ">
             <CardContent className="flex justify-start space-x-4 mt-9">

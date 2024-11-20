@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Item } from "@/type.d/common"
 import { useState } from "react"
+import * as http from "@/api/modules/fouceinter"
 
 interface AlertDialogDemoProps {
     app: Item
@@ -25,27 +26,26 @@ export function AlertDialogDemo({ isOpen, onClose, app, onUninstall }: AlertDial
     const handleUninstall = async () => {
         setIsLoading(true)
         try {
-            const requestBody = {
-                // 根据接口要求传递相关的请求体内容
-                data: "",
-            };
             // 发送 DELETE 请求来卸载应用
-            const response = await fetch(`http://192.168.31.214:8080/api/v1/apps/${app.key}`, {
-                method: "DELETE",
-                headers: {
-                    "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq", 
-                },
-                body: JSON.stringify(requestBody), 
-            }
-        )
-            const data = await response.json()
+            // const response = await fetch(`http://192.168.31.214:8080/api/v1/apps/${app.key}`, {
+            //     method: "DELETE",
+            //     headers: {
+            //         "token": "YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq", 
+            //     },
+            //     body: JSON.stringify(requestBody), 
+            // }
+            // )
 
-            if (data.code === 200) {
+            const response = await http.deleteApp(app.key)
+
+            // const data = await response()
+
+            if (response.code === 200) {
                 onUninstall() // 卸载成功后，执行回调函数
                 onClose() // 关闭对话框
-                
+
             } else {
-                alert(data.msg) // 异常情况，显示错误信息
+                alert(response.msg) // 异常情况，显示错误信息
             }
         } catch (error) {
             console.error("卸载应用失败:", error)
