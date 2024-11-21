@@ -19,7 +19,7 @@ function EditDrawer ({ isOpen, onClose, app }: EditDrawerProps){
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent>
+            <SheetContent className='lg:overflow-y-hidden md:overflow-hidden overflow-auto'>
                 <SheetHeader>
                     <SheetTitle className='ml-9 -mt-1.5 text-gray-700'>参数修改</SheetTitle>
                 </SheetHeader>

@@ -2,13 +2,13 @@
 import { create } from 'zustand';
 
 interface TokenState {
-  token: string | null;
+  token: string ;
   setToken: (newToken: string) => void;
   clearToken: () => void;
 }
 
 export const useTokenStore = create<TokenState>((set) => ({
-  token: null,
+  token: '',
   setToken: (newToken: string) => set({ token: newToken }),
-  clearToken: () => set({ token: null }),
+  clearToken: () => set({ token: '' }),
 }));

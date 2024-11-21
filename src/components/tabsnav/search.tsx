@@ -41,9 +41,9 @@ const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
 
     // 处理提交搜索
     const handleSearch = () => {
-        if (chregex.test(query) && !error ) {
+        if (chregex.test(query) && !error) {
             onSearch(query); // 调用父组件传递的搜索函数
-        }else {
+        } else {
             setError("请输入中文、英文或数字"); // 如果不符合 chregex，设置错误信息
         }
     };
@@ -52,31 +52,34 @@ const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
         <div>
             <div className="relative flex items-center lg:w-[300px] sm:w-[230px]">
 
-            <Input
-                type="text"
-                placeholder="请输入中文、英文或数字..."
-                value={query}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown} // 键盘按下时触发（处理回车提交）
-                className="input-class lg:w-[300px] sm:w-[230px]"
-            />
-            
-            <Button
-                variant="common"
-                onClick={handleSearch}
-                disabled={!!error }
-                className="absolute right-0 top-0.5  p-2 md:p-2"
-            >
-                <MagnifyingGlassIcon className="size-10 shrink-0" />
-            </Button>
+                <div className="w-screen">
+                    <Input
+                        type="text"
+                        placeholder="请输入中文、英文或数字..."
+                        value={query}
+                        onChange={handleChange}
+                        onKeyDown={handleKeyDown} // 键盘按下时触发（处理回车提交）
+                        className="input-class lg:w-[300px]  sm:w-[230px]"
+                    />
+                </div>
+
+
+                <Button
+                    variant="searchbtn"
+                    onClick={handleSearch}
+                    disabled={!!error}
+                    className="absolute right-0 top-0.5  p-2 md:p-2"
+                >
+                    <MagnifyingGlassIcon className="size-10 shrink-0" />
+                </Button>
             </div>
             {/* 错误提示文字 */}
             {error && (
                 <div className="text-red-500 text-xs mt-1">{error}</div>
-                )}
+            )}
         </div>
-        
-        
+
+
     );
 };
 

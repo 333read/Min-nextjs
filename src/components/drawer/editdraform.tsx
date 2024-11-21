@@ -196,7 +196,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
                         disabled={loading}
                         >重启</Button>
                     <SheetClose
-                        className="cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2"
+                        className="cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-5 py-2"
                     >取消</SheetClose>
                 </div>
             </form>

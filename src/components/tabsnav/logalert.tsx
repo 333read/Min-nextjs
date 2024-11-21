@@ -118,7 +118,7 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent className="overflow-scroll">
+            <SheetContent className="overflow-auto">
                 <SheetHeader>
                     <SheetTitle className='ml-9 -mt-1.5 text-gray-700'>Log</SheetTitle>
                 </SheetHeader>

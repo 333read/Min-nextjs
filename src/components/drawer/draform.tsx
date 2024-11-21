@@ -19,7 +19,7 @@ import { HighConfig } from "@/components/drawer/highconfig";
 import { Item } from "@/type.d/common";
 import { useEffect, useState } from "react";
 import * as http from "@/api/modules/fouceinter";
-import { useTokenStore } from "@/store/useTokenStore";
+import { useTokenStore } from "@/store/ TokenContext";
 
 interface ProfileFormProps {
     app: Item; // 接收 app 数据
@@ -148,7 +148,7 @@ export function ProfileForm({
 
     return (
         <Form {...form} >
-            <form className="space-y-8" onSubmit={handleSubmit(handleRestart)}>
+            <form className="space-y-8 " onSubmit={handleSubmit(handleRestart)}>
                 {/* 动态渲染 form_fields */}
                 {formFields.map((field, index) => {
                     // 如果 field 没有 name 属性，生成一个默认的 name
@@ -158,6 +158,7 @@ export function ProfileForm({
                         <FormItem key={index}>
                             <FormLabel>{field.label}</FormLabel>
                             <FormControl>
+                                <div className="w-full">
                                 <Input
                                     id={fieldName}
                                     placeholder="请输入..."
@@ -173,6 +174,7 @@ export function ProfileForm({
                                         },
                                     })}
                                 />
+                                </div>
                             </FormControl>
                             <FormMessage>{errors[fieldName]?.message}</FormMessage>
                         </FormItem>
@@ -199,18 +201,21 @@ export function ProfileForm({
                 </FormItem>
 
                 <div className="flex justify-start space-x-3">
-                    <Button
-                        type="submit"
-                        variant="surely"
-                        className="cursor-pointer"
-                        onClick={handleRestart}
-                        disabled={loading} //防止用户在请求期间重复点击按钮,没有这个条件影响局部加载，会全局加载覆盖出现问题
-                    >
-                        重启
-                    </Button>
-                    <SheetClose className="cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-6 py-2">
-                        取消
-                    </SheetClose>
+                        <Button
+                            type="submit"
+                            variant="surely"
+                            className="cursor-pointer"
+                            onClick={handleRestart}
+                            disabled={loading} //防止用户在请求期间重复点击按钮,没有这个条件影响局部加载，会全局加载覆盖出现问题
+                        >
+                            重启
+                        </Button>
+
+                        <SheetClose className="cursor-pointer border border-input rounded-md bg-transparent text-sm text-gray-600 shadow-sm hover:bg-white hover:border-theme-color/85 hover:text-theme-color/85 h-9 px-5 py-2">
+                            取消
+                        </SheetClose>
+
+                    
                 </div>
             </form>
         </Form>
