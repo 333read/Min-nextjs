@@ -7,6 +7,6 @@ export interface Result {
 
 // 通用返回数据
 export interface ResultData<T = any> extends Result {
-    [x: string]: string
+    [x: number]: string
     data?: T
 }

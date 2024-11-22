@@ -9,8 +9,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import axios from "axios";
-import Codemirror from "@uiw/react-codemirror";
+import Codemirror, {ReactCodeMirrorRef} from "@uiw/react-codemirror";
 import { javascript } from '@codemirror/lang-javascript';
 import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/select";
 import { useState, useEffect, useRef } from "react";
@@ -52,7 +51,7 @@ export function AlertLogDemo({ isOpen, onClose }: AlertLogDemoProps) {
 
 export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
     const [logInfo, setLogInfo] = useState('');
-    const codemirrorRef = useRef(null);  //创建对 Codemirror 编辑器的引用，便于侧边滚动到最后
+    const codemirrorRef = useRef<ReactCodeMirrorRef>(null);  //创建对 Codemirror 编辑器的引用，便于侧边滚动到最后
     const [logSearch, setLogSearch] = useState({
         modeIndex: 0, // 当前选中的时间范围索引
         tail: 10000,
@@ -86,23 +85,19 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
                 tail: logSearch.tail,
                 since: selectedOption.value !== 'all' ? selectedOption.value : undefined, // 只传递选中的时间戳
             };
-            // const response = await axios.get(`/api/v1/apps/installed/${app.id}/logs`, {
-            //     params,
-            //     headers: {
-            //         token: `YIG8ANC8q2QxFV_Gf8qwkPdBj2EpsqGqlfc3qvSdg7ksVkZcokOUtQn43XGK0NK3BXUDsyebUlpKIFKXISMXA6nB0kpNgtZ2Vus-0ALbiLKPW74oqXtwUlA_aJyQP-hq`
-            //     }
-            // });
             const response = await http.getLogs(app.id, logparams)
             setLogInfo(response.data ||''); // 设置返回的日志数据
             console.log("日志 data:", response.data);
 
             //  设置Codemirror 的引用，滚动到最后
             if (codemirrorRef.current) {
-                const { doc } = codemirrorRef.current.view.state;
-                codemirrorRef.current.view.dispatch({
-                    selection: { anchor: doc.length, head: doc.length },
-                    scrollIntoView: true,
+                if(codemirrorRef.current.view){
+                    const { doc } = codemirrorRef.current.view.state;
+                    codemirrorRef.current.view.dispatch({
+                        selection: { anchor: doc.length, head: doc.length },
+                        scrollIntoView: true,
                 });
+            }
             }
         } catch (error) {
             console.log("Failed to fetch logs:", error);
@@ -175,7 +170,7 @@ export function AlertLogHave({ isOpen, onClose, app }: AlertLogHaveProps) {
                         height="950px"
                         theme="light"
                         autoFocus={true} // 加载自动聚焦
-                        extensions={[javascript()]}                       
+                        extensions={[javascript()]}             
                     />
                 </div>
             </SheetContent>

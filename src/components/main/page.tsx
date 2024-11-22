@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Skeleton } from "@/components/ui/skeleton"
@@ -95,7 +96,7 @@ const handleMicroData = () => {
             // useTokenStore().setToken(data.token)
         });
         // 监听基座下发的数据变化 - 全局
-        eventCenterForMicroApp.addGlobalDataListener((data: any) => {
+        eventCenterForMicroApp.addGlobalDataListener(() => {
             // useTokenStore().setToken(data.token)
         });
     }
@@ -115,7 +116,6 @@ function MainPage() {
     const [currentPage, setCurrentPage] = useState(1); // 当前页面
     const [searchQuery, setSearchQuery] = useState(""); // 搜索关键词
     const pageSize = 9; // 每页显示的应用数
-    const [columns, setColumns] = useState(); // 大屏显示的列数
 
 
     // 请求数据
@@ -123,8 +123,10 @@ function MainPage() {
         setLoading(true);
         const data = await fetchAppsData(activeTab, selectedClass, page, pageSize, query);
         if (activeTab === 'installed') {
+            console.log('installedApps', installedApps);
             setInstalledApps(data?.items || []); // 已安装应用的搜索结果
         } else if (activeTab === 'all') {
+            console.log('apps', apps);
             setApps(data?.items || []); // 所有应用的搜索结果
         }
         setFilteredApps(data?.items || []); // 过滤后的应用
@@ -135,9 +137,9 @@ function MainPage() {
     // 初次加载数据
     useEffect(() => {
         // 设置延迟时间（比如 3 秒），延迟一下页面加载会更丝滑
-        const timer = setTimeout(() => {
-            console.log("这个方法延迟了3秒后触发！");
-        }, 3000);
+        // const timer = setTimeout(() => {
+        //     console.log("这个方法延迟了3秒后触发！");
+        // }, 3000);
         loadData(searchQuery, currentPage); /// 根据 currentPage 加载数据
 
 

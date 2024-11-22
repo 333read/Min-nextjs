@@ -38,6 +38,6 @@
       "@/*": ["*"],
       "next-themes/dist/types": ["node_modules/next-themes/dist/types"]
     },
-    "include": ["src"]
+    // "include": ["src"]
   }
 }

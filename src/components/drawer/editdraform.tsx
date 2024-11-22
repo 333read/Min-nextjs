@@ -93,6 +93,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
         // 校验表单，确保字段不为空
         const isValid = await form.trigger(); // 校验所有表单字段
         if (!isValid) {
+            console.log(error)
             setError("请填完整的字段信息！");
             setLoading(false);
             return;
@@ -159,7 +160,7 @@ export function EditForm({ app, onEditSuccess, onEditFalse }: EditProps) {
                                     placeholder="请输入..."
                                     {...form.register(fieldName, {
                                         required: `${field.label} 不能为空`,
-                                        onChange: (e) => form.trigger(fieldName),
+                                        onChange: (_e) => form.trigger(fieldName),
                                         onBlur: () => form.trigger(fieldName),
                                     })}
                                 />

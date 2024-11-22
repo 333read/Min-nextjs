@@ -19,7 +19,6 @@ import { HighConfig } from "@/components/drawer/highconfig";
 import { Item } from "@/type.d/common";
 import { useEffect, useState } from "react";
 import * as http from "@/api/modules/fouceinter";
-import { useTokenStore } from "@/store/ TokenContext";
 
 interface ProfileFormProps {
     app: Item; // 接收 app 数据
@@ -51,7 +50,7 @@ export function ProfileForm({
     const [memoryLimit, setMemoryLimit] = useState<string>("0"); // 默认值为 120M
     const [loading, setLoading] = useState<boolean>(false); // 加载状态
     const [error, setError] = useState<string>(""); // 错误信息
-    const [successMessage, setSuccessMessage] = useState<string>("");
+    // const [successMessage, setSuccessMessage] = useState<string>("");
     const [formFields, setFormFields] = useState<any[]>([]); // 存储 form_fields 数据
 
     const form = useForm<FormValues>({
@@ -90,7 +89,7 @@ export function ProfileForm({
 
                     setLoading(false); // 请求完成
                 })
-                .catch((err) => {
+                .catch((_error) => {
                     setError("请求失败，请稍后重试"); // 错误处理
                     setLoading(false);
                 });
@@ -101,11 +100,12 @@ export function ProfileForm({
     const handleRestart = async () => {
         setLoading(true);
         setError(""); // 清除之前的错误信息
-        setSuccessMessage(""); // 清除之前的成功信息
+        // setSuccessMessage(""); // 清除之前的成功信息
 
         // 校验表单，确保字段不为空
         const isValid = await form.trigger(); // 校验所有表单字段
         if (!isValid) {
+            console.log("表单校验失败！");
             setError("请填完整的字段信息！"); // 提示用户填写完整字段
             setLoading(false);
             return;
@@ -133,8 +133,8 @@ export function ProfileForm({
                 onInstallSuccess(); // 成功时调用回调函数回到drawer组件
             } else {
                 // 请求失败，显示错误消息
-                console.log("安装失败！", response);
-                setError(response.message || "请求失败，请稍后重试");
+                console.log(error);
+                // setError(response.message || "请求失败，请稍后重试");
                 onFalse(); // 失败时调用回调函数回到drawer组件显示
             }
         } catch (error) {
@@ -164,7 +164,7 @@ export function ProfileForm({
                                     placeholder="请输入..."
                                     {...form.register(fieldName, {
                                         required: `${field.label} 不能为空`,
-                                        onChange: (e) => {
+                                        onChange: (_error) => {
                                             // 触发 onChange 时重新校验（即时校验）
                                             form.trigger(fieldName);
                                         },
