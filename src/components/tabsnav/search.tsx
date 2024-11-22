@@ -50,7 +50,7 @@ const UniSearch: React.FC<UniSearchProps> = ({ onSearch }) => {
 
     return (
         <div>
-            <div className="relative flex items-center lg:w-[300px] sm:w-[230px]">
+            <div className="relative flex items-center lg:w-[300px] w-[300px]">
 
                 <div className="w-screen">
                     <Input

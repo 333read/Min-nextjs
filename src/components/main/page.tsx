@@ -286,7 +286,7 @@ function MainPage() {
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.5 }}
                                     >
-                                        <Card key={index} className="w-[377px] h-[200px]">
+                                        <Card key={index} className="lg:w-auto  lg:h-[200px] md:w-auto w-[360px] my-2">
                                             <CardContent className="flex justify-start space-x-4 mt-9">
                                                 <Skeleton className="h-12 w-12 rounded-full" />
                                                 <CardDescription className="space-y-1 text-left">
@@ -311,7 +311,7 @@ function MainPage() {
                                         transition={{ duration: 0.7 }}
                                     >
 
-                                        <Card key={app.id} className="lg:w-auto  lg:h-[200px] md:w-[330px] w-[360px] my-2">
+                                        <Card key={app.id} className="lg:w-auto   md:w-auto w-auto lg:h-[200px] my-2">
                                             <CardContent className="flex justify-start space-x-4 mt-9">
                                                 <Avatar className="my-auto size-10">
                                                     <AvatarImage src={app.icon} />
@@ -346,7 +346,7 @@ function MainPage() {
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.5 }}
                         >
-                            <div className=" content-start grid gap-1 m-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
+                            <div className=" grid gap-4 m-1 grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
                                 {loading ? (
                                     <div></div>
                                 ) : (
